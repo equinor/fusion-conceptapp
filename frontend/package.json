@@ -41,6 +41,12 @@
         "build": "fusion build-app",
         "dev": "fusion start-app"
     },
+    "eslintConfig": {
+        "extends": [
+            "react-app",
+            "react-app/jest"
+        ]
+    },
     "browserslist": { 
         "production": [
             ">0.2%",
