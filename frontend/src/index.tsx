@@ -40,7 +40,7 @@ const App: FC = () => {
     );
 };
 
-registerApp('fusionhelloworld', {
+registerApp('dcd', {
     AppComponent: App,
 });
 
