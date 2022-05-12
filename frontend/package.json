@@ -37,9 +37,9 @@
         "@equinor/fusion-components": "^2.5.20"
     },
     "scripts": {
-        "start": "docker-compose up --build",
+        "start": "fusion start-app",
         "build": "fusion build-app",
-        "dev": "fusion start-app"
+        "dev": "jest"
     },
     "eslintConfig": {
         "extends": [
