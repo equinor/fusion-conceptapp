@@ -42,6 +42,12 @@
         "shortName": "fusion-helloworld"
     },
     "devDependencies": {
+        "@testing-library/jest-dom": "^5.16.2",
+        "@testing-library/react": "^12.1.2",
+        "@testing-library/user-event": "^13.5.0",
+        "@types/file-saver": "^2.0.5",
+        "@types/jest": "^27.4.0",
+        
         "@equinor/fusion-cli": "^2.4.10",
         "@types/history": "^4.7.6",
         "@types/react": "^17.0.0",
