@@ -1,47 +1,54 @@
 import { FC, useEffect } from 'react';
-import { registerApp, useCurrentUser, useNotificationCenter } from '@equinor/fusion';
 import { Button, usePopoverRef } from '@equinor/fusion-components';
+import React, { VoidFunctionComponent } from 'react';
+import { registerApp, ContextTypes, Context, useAppConfig, useFusionContext, useCurrentUser } from '@equinor/fusion'
+import { ApplicationInsights } from "@microsoft/applicationinsights-web"
+import { ReactPlugin } from '@microsoft/applicationinsights-react-js'
+import { BrowserRouter, Switch, Route } from 'react-router-dom'
+import { ErrorBoundary } from '@equinor/fusion-components'
 
 import * as styles from './styles.less';
+import { RetrieveConfigFromAzure } from './config';
+import { createBrowserHistory } from 'history';
+import App from './App';
 
-const App: FC = () => {
-    const currentUser = useCurrentUser();
-    const sendNotification = useNotificationCenter();
+const browserHistory = createBrowserHistory()
+const reactPlugin = new ReactPlugin()
 
-    const [popoverRef] = usePopoverRef(
-        <div className={styles.popover}>What a lovely popover 💩</div>,
-        {
-            placement: 'below',
-        }
-    );
-    
-    const sendWelcomeNotification = async () => {
-        await sendNotification({
-            id: 'This is a unique id which means the notification will only be shown once',
-            level: 'medium',
-            title:
-                'Welcome to your new fusion app! Open up src/index.tsx to start building your app!',
-        });
-    };
+const Start: VoidFunctionComponent = () => {
+    const fusionContext = useFusionContext()
+    const currentUser = useCurrentUser()
+    const runtimeConfig = useAppConfig()
+    const [hasLoggedIn, setHasLoggedIn] = React.useState(false)
+    const [apiUrl, setApiUrl] = React.useState('')
+    const [manniAppConfig, setManniAppConfig] = React.useState<any>()
 
-    useEffect(() => {
-        sendWelcomeNotification();
-    }, []);
+    React.useEffect(() => {
+        (async () => {
+            try {
+                console.log("1")
+                const appConfig = await RetrieveConfigFromAzure()
+                
+                console.log("2")
+                //setManniAppConfig(appConfig)
 
-    if (!currentUser) {
-        return null;
-    }
+               
+                console.log("3")
+
+                const asd = ""
+            } catch (error) {
+                console.error("[App] Error while retreiving AppConfig from Azure", error)
+            }
+        })()
+    }, [])
 
     return (
-        <div className={styles.hello}>
-            <h1>Oh hello there, {currentUser.fullName}</h1>
-            <Button ref={popoverRef}>Click me!</Button>
-        </div>
+        <App />
     );
 };
 
 registerApp('dcd', {
-    AppComponent: App,
+    AppComponent: Start,
 });
 
 if (module.hot) {
