@@ -78,8 +78,7 @@
         "eslint-plugin-jsx-a11y": "^6.5.1",
         "eslint-plugin-react": "^7.28.0",
         "eslint-plugin-react-hooks": "^4.3.0",
-        "react-scripts": "^5.0.0",
-
+        "dotenv-webpack": "^7.1.0",
         "@equinor/fusion-cli": "^2.4.10",
         "@types/history": "^4.7.6",
         "@types/react": "^17.0.0",

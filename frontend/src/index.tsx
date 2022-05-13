@@ -1,42 +1,33 @@
 import { FC, useEffect } from 'react';
-import { registerApp, useCurrentUser, useNotificationCenter } from '@equinor/fusion';
 import { Button, usePopoverRef } from '@equinor/fusion-components';
+import React, { VoidFunctionComponent } from 'react';
+import { registerApp, ContextTypes, Context, useAppConfig, useFusionContext, useCurrentUser } from '@equinor/fusion'
+
 
 import * as styles from './styles.less';
+import { RetrieveConfigFromAzure } from './config';
 
-const App: FC = () => {
-    const currentUser = useCurrentUser();
-    const sendNotification = useNotificationCenter();
+const App: VoidFunctionComponent = () => {
+    const fusionContext = useFusionContext()
+    const currentUser = useCurrentUser()
+    const runtimeConfig = useAppConfig()
+    const [hasLoggedIn, setHasLoggedIn] = React.useState(false)
+    const [apiUrl, setApiUrl] = React.useState('')
 
-    const [popoverRef] = usePopoverRef(
-        <div className={styles.popover}>What a lovely popover 💩</div>,
-        {
-            placement: 'below',
-        }
-    );
-    
-    const sendWelcomeNotification = async () => {
-        await sendNotification({
-            id: 'This is a unique id which means the notification will only be shown once',
-            level: 'medium',
-            title:
-                'Welcome to your new fusion app! Open up src/index.tsx to start building your app!',
-        });
-    };
-
-    useEffect(() => {
-        sendWelcomeNotification();
-    }, []);
-
-    if (!currentUser) {
-        return null;
-    }
+    React.useEffect(() => {
+        (async () => {
+            try {
+                console.log("Hei 1")
+                const appConfig = await RetrieveConfigFromAzure()
+                console.log("Hei 2")
+            } catch (error) {
+                console.error("[App] Error while retreiving AppConfig from Azure", error)
+            }
+        })()
+    }, [])
 
     return (
-        <div className={styles.hello}>
-            <h1>Oh hello there, {currentUser.fullName}</h1>
-            <Button ref={popoverRef}>Click me!</Button>
-        </div>
+    <p> Hehe</p>
     );
 };
 
