@@ -9,13 +9,13 @@ import DashboardView from './Views/DashboardView'
 const App = () => {
     const currentProject = useCurrentContext()
 
-    if (!currentProject) {
-        return (
-            <>
-                <p>Please select a project.</p>
-            </>
-        )
-    }
+    // if (!currentProject) {
+    //     return (
+    //         <>
+    //             <p>Please select a project.</p>
+    //         </>
+    //     )
+    // }
 
     return (
         <>
