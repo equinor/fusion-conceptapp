@@ -21,6 +21,18 @@ steps:
       command: "install"
       workingDir: "frontend"    
 
+- task: Npm@1
+  displayName: "Bundle frontend"
+  inputs:
+      command: "custom"
+      workingDir: "frontend"
+      customCommand: "run-script build"
+
+- task: PublishPipelineArtifact@1
+  inputs:
+      targetPath: "$(Pipeline.Workspace)/s/frontend/out/bmt.zip"
+      artifactName: DCD
+
 - task: FusionCLI@2
   inputs:
     azureSubscription: 'dcd-pipeline-sp'
