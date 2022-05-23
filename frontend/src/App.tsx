@@ -24,7 +24,7 @@ const App = () => {
             <ErrorBoundary>
                 <BrowserRouter>
                     <Switch>
-                        <Route path="/" exact component={DashboardView}/>
+                        <Route path="/:fusionProjectId" exact component={DashboardView}/>
                     </Switch>
                 </BrowserRouter>
             </ErrorBoundary>

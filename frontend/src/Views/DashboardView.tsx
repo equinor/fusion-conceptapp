@@ -91,14 +91,6 @@ const DashboardView = () => {
 
     const grey: string = tokens.colors.ui.background__scrim.rgba
 
-    if (isFetching) {
-        return (
-            <Modal isOpen={isFetching} title="Getting data" shards={[]}>
-                <Typography>Retrieving projects from Common Library.</Typography>
-            </Modal>
-        )
-    }
-
     if (!projects) return null
 
     /* Below code maps two lists, commonlib projects (clp) and projects (stored projects) into the same list of options

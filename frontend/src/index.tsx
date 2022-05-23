@@ -42,23 +42,28 @@ const Start: VoidFunctionComponent = () => {
     React.useEffect(() => {
         (async () => {
             try {
-                console.log("1")
-                const appConfig = await RetrieveConfigFromAzure()
-                const isLoggedIn = await fusionContext.auth.container.registerAppAsync(appConfig.azureAd.clientId, [])
-                if (!isLoggedIn) {
-                    await fusionContext.auth.container.loginAsync(appConfig.azureAd.clientId)
-                    return
-                }
+                // console.log("1")
+                // const appConfig = await RetrieveConfigFromAzure()
+                // // const aa = await fusionContext.auth.container.loginAsync(appConfig.azureAd.clientId)
+                // // console.log(aa)
+                // // const isLoggedIn = await fusionContext.auth.container.registerAppAsync(appConfig.azureAd.clientId, [])
+                // // console.log(isLoggedIn)
+                // // if (!isLoggedIn) {
+                // //     await fusionContext.auth.container.loginAsync(appConfig.azureAd.clientId)
+                // //     return
+                // // }
+                // return (<p>{useCurrentUser()}</p>)
+                // console.log(useCurrentUser())
                 
-                var b = 2
-                var a = b
-                console.log("2")
-                //setManniAppConfig(appConfig)
+                // var b = 2
+                // var a = b
+                // console.log("2")
+                // //setManniAppConfig(appConfig)
 
                
-                console.log("3")
+                // console.log("3")
 
-                const asd = ""
+                // const asd = ""
             } catch (error) {
                 console.error("[App] Error while retreiving AppConfig from Azure", error)
             }
