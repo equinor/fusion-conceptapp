@@ -18,5 +18,6 @@
   "include": [
     "src/**/*",
     "./css-modules.d.ts",
+    "./src/types.d.ts"
   ],
 }

@@ -2,18 +2,9 @@ import { AppConfigurationClient } from "@azure/app-configuration"
 import { LogLevel } from "@azure/msal-browser"
 
 export const AzureAd = {
-    clientId: "9b125a0c-4907-43b9-8db2-ff405d6b0524",
+    clientId: "65487472-b6a9-4671-9248-1d97fff300ea",
     authority: "https://login.microsoftonline.com/3aa4a235-b6e2-48d5-9195-7fcf05b459b0",
     redirectUri: process.env.REACT_APP_REDIRECT_URI,
-}
-declare const API_URL: string
-declare const AD_APP_ID: string
-declare const APP_INSIGHTS: string
-
-const config = {
-    API_URL: API_URL,
-    AD_APP_ID: AD_APP_ID,
-    APP_INSIGHTS: APP_INSIGHTS,
 }
 
 export const fusionApiScope = ["97978493-9777-4d48-b38a-67b0b9cd88d2/.default"]

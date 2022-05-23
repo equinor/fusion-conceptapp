@@ -2,30 +2,36 @@ import React from 'react'
 
 import { ErrorBoundary } from '@equinor/fusion-components'
 
-import { useCurrentContext } from '@equinor/fusion'
-import { Switch, Route } from 'react-router-dom'
+import { useCurrentContext, useCurrentUser } from '@equinor/fusion'
+import { Switch, Route, BrowserRouter } from 'react-router-dom'
 import DashboardView from './Views/DashboardView'
 
-const App = () => {
-    const currentProject = useCurrentContext()
 
-    // if (!currentProject) {
-    //     return (
-    //         <>
-    //             <p>Please select a project.</p>
-    //         </>
-    //     )
-    // }
+const App = () => {
+    const currentUser = useCurrentUser()
+
+
+    if (!currentUser) {
+        return (
+            <>
+                <p>Du ekke logget inn</p>
+            </>
+        )
+    }
 
     return (
         <>
             <ErrorBoundary>
-                <Switch>
-                    <Route path="/" exact component={DashboardView}/>
-                </Switch>
+                <BrowserRouter>
+                    <Switch>
+                        <Route path="/" exact component={DashboardView}/>
+                    </Switch>
+                </BrowserRouter>
             </ErrorBoundary>
         </>
     )
 }
+
+
 
 export default App

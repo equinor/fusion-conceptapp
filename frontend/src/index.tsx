@@ -22,13 +22,36 @@ const Start: VoidFunctionComponent = () => {
     const [hasLoggedIn, setHasLoggedIn] = React.useState(false)
     const [apiUrl, setApiUrl] = React.useState('')
     const [manniAppConfig, setManniAppConfig] = React.useState<any>()
+/*
+    const login = async () => {
+        const isLoggedIn = await fusionContext.auth.container.registerAppAsync(config.AD_APP_ID, [])
+
+        if (!isLoggedIn) {
+            await fusionContext.auth.container.loginAsync(config.AD_APP_ID)
+            return
+        }
+
+        setHasLoggedIn(true)
+    }
+
+    React.useEffect(() => {
+        login()
+    }, [])
+*/
 
     React.useEffect(() => {
         (async () => {
             try {
                 console.log("1")
                 const appConfig = await RetrieveConfigFromAzure()
+                const isLoggedIn = await fusionContext.auth.container.registerAppAsync(appConfig.azureAd.clientId, [])
+                if (!isLoggedIn) {
+                    await fusionContext.auth.container.loginAsync(appConfig.azureAd.clientId)
+                    return
+                }
                 
+                var b = 2
+                var a = b
                 console.log("2")
                 //setManniAppConfig(appConfig)
 
@@ -49,7 +72,18 @@ const Start: VoidFunctionComponent = () => {
 
 registerApp('dcd', {
     AppComponent: Start,
-});
+    name: 'DCD Concept App',
+    context: {
+        types: [ContextTypes.ProjectMaster],
+        buildUrl: (context: Context | null, url: string) => {
+            if (!context) return ''
+            return `/${context.id}`
+        },
+        getContextFromUrl: (url: string) => {
+            return url.split('/')[1]
+        },
+    },
+})
 
 if (module.hot) {
     module.hot.accept();
