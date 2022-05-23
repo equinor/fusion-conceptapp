@@ -30,6 +30,7 @@
         "react-focus-on": "^3.5.4",
         "react-hook-form": "^7.27.0",
         "react-plotly.js": "^2.5.1",
+        "react-router-dom": "^5.0.1",
         "styled-components": "^5.3.3",
         "web-vitals": "^2.1.4",
         "@equinor/fusion": "^3.3.7",
