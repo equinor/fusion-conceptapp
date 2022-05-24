@@ -43,12 +43,16 @@ jobs:
             artifactName: ConceptApp  
   - deployment: deploy_app
     displayName: 'Deploy application'
-    dependsOn: checkout
-    environment: QA
+    dependsOn: Build_Fusion_App
+    environment: dev
     strategy:
       runOnce:
         deploy:
           steps:
+          - task: DownloadPipelineArtifact@2
+            inputs:
+                artifact: ConceptApp
+          - script: ls -1 -d "$PWD/"frontend/out/*  
           - task: FusionApp@2
             displayName: 'Deploying app'
             inputs:
