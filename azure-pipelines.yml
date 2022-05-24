@@ -11,34 +11,7 @@ pool:
   vmImage: ubuntu-latest
 
 jobs:
-  - job: "Build_Fusion_App"
-    steps:
-        - task: UseDotNet@2
-          displayName: "Install Dotnet"
-          inputs:
-              packageType: "sdk"
-              version: "5.0.x"
-       
-        - task: NodeTool@0
-          inputs:
-              versionSpec: "16.x"
-        - task: Npm@1
-          displayName: "Install frontend"
-          inputs:
-              command: "install"
-              workingDir: "frontend"
-        - task: Npm@1
-          displayName: "Bundle frontend"
-          inputs:
-              command: "custom"
-              workingDir: "frontend"
-              customCommand: "run-script build"
-        - task: PublishPipelineArtifact@1
-          inputs:
-              targetPath: "$(Build.SourcesDirectory)/frontend/out/dcd.zip"
-              artifactName: FusionBMT  
   - deployment: deploy_app
-    dependsOn: Build_Fusion_App      
     displayName: 'Deploy application'
     environment: QA
     strategy:
