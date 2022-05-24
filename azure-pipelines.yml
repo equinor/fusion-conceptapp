@@ -39,7 +39,7 @@ jobs:
             customCommand: "run-script build"
       - task: PublishPipelineArtifact@1
         inputs:
-            targetPath: "$(Build.SourcesDirectory)/s/frontend/out/dcd.zip"
+            targetPath: "$(Build.SourcesDirectory)/frontend/out/dcd.zip"
             artifactName: ConceptApp  
   - deployment: deploy_app
     displayName: 'Deploy application'
