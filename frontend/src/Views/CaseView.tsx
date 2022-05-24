@@ -22,6 +22,7 @@ import DGEnum from "../models/DGEnum"
 import ProductionStrategyOverview from "../Components/ProductionStrategyOverview"
 import NumberInput from "../Components/NumberInput"
 import { GetCaseService } from "../Services/CaseService"
+import SideMenu from "../Components/SideMenu/SideMenu"
 // import ExcelUpload from "../Components/ExcelUpload"
 
 const CaseViewDiv = styled.div`
@@ -36,6 +37,25 @@ const Wrapper = styled.div`
         margin-right: 1rem;
     }
     flex-direction: row;
+`
+const ProjectWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100vw;
+`
+
+const Body = styled.div`
+    display: flex;
+    flex-direction: row;
+    flex-row: 1;
+    width: 100%;
+    height: 100%;
+`
+
+const MainView = styled.div`
+    width: calc(100% - 15rem);
+    overflow: scroll;
 `
 
 function CaseView() {
@@ -111,6 +131,10 @@ function CaseView() {
     if (!project) return null
 
     return (
+        <ProjectWrapper>
+        <Body>
+            <SideMenu />
+            <MainView>
         <CaseViewDiv>
             <CaseName
                 caseItem={caseItem}
@@ -217,6 +241,9 @@ function CaseView() {
                 />
             </Tabs>
         </CaseViewDiv>
+        </MainView>
+            </Body>
+        </ProjectWrapper>
     )
 }
 

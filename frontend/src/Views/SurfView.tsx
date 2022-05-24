@@ -24,7 +24,28 @@ import ProductionFlowline from "../Components/ProductionFlowline"
 import { SurfCostProfile } from "../models/assets/surf/SurfCostProfile"
 import { SurfCessationCostProfile } from "../models/assets/surf/SurfCessationCostProfile"
 import AssetCurrency from "../Components/AssetCurrency"
+import SideMenu from "../Components/SideMenu/SideMenu"
+import styled from "styled-components"
 
+const ProjectWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100vw;
+`
+
+const Body = styled.div`
+    display: flex;
+    flex-direction: row;
+    flex-row: 1;
+    width: 100%;
+    height: 100%;
+`
+
+const MainView = styled.div`
+    width: calc(100% - 15rem);
+    overflow: scroll;
+`
 const SurfView = () => {
     const [project, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
@@ -136,6 +157,10 @@ const SurfView = () => {
         costProfile, cessationCostProfile, currency])
 
     return (
+        <ProjectWrapper>
+        <Body>
+            <SideMenu />
+            <MainView>
         <AssetViewDiv>
             <Wrapper>
                 <Typography variant="h2">Surf</Typography>
@@ -270,6 +295,9 @@ const SurfView = () => {
                 setLastYear={setLastTSYear}
             />
         </AssetViewDiv>
+                </MainView>
+                </Body>
+            </ProjectWrapper>
     )
 }
 

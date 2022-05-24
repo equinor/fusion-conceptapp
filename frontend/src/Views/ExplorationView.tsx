@@ -24,7 +24,29 @@ import { ExplorationDrillingSchedule } from "../models/assets/exploration/Explor
 import { GAndGAdminCost } from "../models/assets/exploration/GAndAdminCost"
 import TimeSeries from "../Components/TimeSeries"
 import AssetCurrency from "../Components/AssetCurrency"
+import SideMenu from "../Components/SideMenu/SideMenu"
+import styled from "styled-components"
 
+
+const ProjectWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100vw;
+`
+
+const Body = styled.div`
+    display: flex;
+    flex-direction: row;
+    flex-row: 1;
+    width: 100%;
+    height: 100%;
+`
+
+const MainView = styled.div`
+    width: calc(100% - 15rem);
+    overflow: scroll;
+`
 const ExplorationView = () => {
     const [project, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
@@ -105,6 +127,10 @@ const ExplorationView = () => {
     }, [rigMobDemob, costProfile, drillingSchedule, gAndGAdminCost, currency])
 
     return (
+        <ProjectWrapper>
+        <Body>
+            <SideMenu />
+            <MainView>
         <AssetViewDiv>
             <Wrapper>
                 <Typography variant="h2">Exploration</Typography>
@@ -173,6 +199,9 @@ const ExplorationView = () => {
                 setLastYear={setLastTSYear}
             />
         </AssetViewDiv>
+                </MainView>
+                </Body>
+            </ProjectWrapper>
     )
 }
 

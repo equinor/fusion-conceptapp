@@ -24,7 +24,28 @@ import NumberInput from "../Components/NumberInput"
 import { SubstructureCostProfile } from "../models/assets/substructure/SubstructureCostProfile"
 import { SubstructureCessationCostProfile } from "../models/assets/substructure/SubstructureCessationCostProfile"
 import AssetCurrency from "../Components/AssetCurrency"
+import SideMenu from "../Components/SideMenu/SideMenu"
+import styled from "styled-components"
 
+const ProjectWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100vw;
+`
+
+const Body = styled.div`
+    display: flex;
+    flex-direction: row;
+    flex-row: 1;
+    width: 100%;
+    height: 100%;
+`
+
+const MainView = styled.div`
+    width: calc(100% - 15rem);
+    overflow: scroll;
+`
 const SubstructureView = () => {
     const [project, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
@@ -108,7 +129,10 @@ const SubstructureView = () => {
         }
     }, [maturity, dryWeight, costProfile, cessationCostProfile, currency])
 
-    return (
+    return (        <ProjectWrapper>
+        <Body>
+            <SideMenu />
+            <MainView>
         <AssetViewDiv>
             <Wrapper>
                 <Typography variant="h2">Substructure</Typography>
@@ -180,6 +204,9 @@ const SubstructureView = () => {
                 setLastYear={setLastTSYear}
             />
         </AssetViewDiv>
+                </MainView>
+                </Body>
+            </ProjectWrapper>
     )
 }
 

@@ -29,7 +29,29 @@ import { ProductionProfileOil } from "../models/assets/drainagestrategy/Producti
 import { ProductionProfileWater } from "../models/assets/drainagestrategy/ProductionProfileWater"
 import { ProductionProfileWaterInjection } from "../models/assets/drainagestrategy/ProductionProfileWaterInjection"
 import { ProductionProfileNGL } from "../models/assets/drainagestrategy/ProductionProfileNGL"
+import SideMenu from "../Components/SideMenu/SideMenu"
+import styled from "styled-components"
 
+
+const ProjectWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100vw;
+`
+
+const Body = styled.div`
+    display: flex;
+    flex-direction: row;
+    flex-row: 1;
+    width: 100%;
+    height: 100%;
+`
+
+const MainView = styled.div`
+    width: calc(100% - 15rem);
+    overflow: scroll;
+`
 const DrainageStrategyView = () => {
     const [project, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
@@ -137,6 +159,10 @@ const DrainageStrategyView = () => {
         productionProfileNGL])
 
     return (
+        <ProjectWrapper>
+        <Body>
+            <SideMenu />
+            <MainView>
         <AssetViewDiv>
             <Wrapper>
                 <Typography variant="h2">Drainage strategy</Typography>
@@ -296,6 +322,9 @@ const DrainageStrategyView = () => {
                 setLastYear={setLastTSYear}
             />
         </AssetViewDiv>
+                </MainView>
+                </Body>
+            </ProjectWrapper>
     )
 }
 
