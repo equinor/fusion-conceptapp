@@ -16,7 +16,31 @@ jobs:
     steps:
       - checkout: self
       - script: ls -1 -d "$PWD/"frontend/out/*
-    
+  - job: "Build_Fusion_App"
+    steps:
+      - task: UseDotNet@2
+        displayName: "Install Dotnet"
+        inputs:
+            packageType: "sdk"
+            version: "5.0.x"      
+      - task: NodeTool@0
+        inputs:
+            versionSpec: "16.x"
+      - task: Npm@1
+        displayName: "Install frontend"
+        inputs:
+            command: "install"
+            workingDir: "frontend"
+      - task: Npm@1
+        displayName: "Bundle frontend"
+        inputs:
+            command: "custom"
+            workingDir: "frontend"
+            customCommand: "run-script build"
+      - task: PublishPipelineArtifact@1
+        inputs:
+            targetPath: "${{ parameters.workSpace }}/s/frontend/out/dcd.zip"
+            artifactName: ConceptApp  
   - deployment: deploy_app
     displayName: 'Deploy application'
     dependsOn: checkout
