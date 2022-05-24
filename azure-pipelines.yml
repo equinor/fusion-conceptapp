@@ -1,0 +1,41 @@
+# Starter pipeline
+
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+  - task: InvokeRESTAPI@1
+    inputs:
+      connectionType: 'connectedServiceName' # Options: connectedServiceName, connectedServiceNameARM
+      serviceConnection: 'conceptapp-preprod'    
+      method: 'POST' 
+      #headers: '{Content-Type:application/json, PlanUrl: $(system.CollectionUri), ProjectId: $(system.TeamProjectId), HubName: $(system.HostType), PlanId: $(system.PlanId), JobId: $(system.JobId), TimelineId: $(system.TimelineId), TaskInstanceId: $(system.TaskInstanceId), AuthToken: $(system.AccessToken)}' 
+      body: |
+      {
+        "key": "conceptapp",
+        "name": "Digitalization of Concept Development",
+        "shortName": "conceptapp",
+        "description": "ad exercitation in cupidatat",
+        "type": 0,
+        "owners": [
+          "eirik.eikeberg@equinor.com",
+          "eirik.sander-fjeld@equinor.com",
+          "ahmed.abdi@equinor.com"
+        ],
+        "admins": [
+          "eirik.eikeberg@equinor.com",
+          "eirik.sander-fjeld@equinor.com",
+          "ahmed.abdi@equinor.com"
+        ],
+        "hide": false
+      }
+      urlSuffix: '/api/apps?api-version=1.0'
+      #waitForCompletion: 'false' # Options: true, false
+      #successCriteria: # Optional
