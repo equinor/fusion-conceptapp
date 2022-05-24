@@ -9,7 +9,7 @@ export const GetDrainageStrategy = (
 ) => project.drainageStrategies?.find((o) => o.id === drainageStrategyId)
 
 export function ProjectPath(projectId: string) {
-    return `/project/${projectId}`
+    return `/${projectId}`
 }
 
 export function CasePath(projectId: string, caseId: string) {

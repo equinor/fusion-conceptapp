@@ -14,6 +14,7 @@ import { ProjectPath } from "../Utils/common"
 import { GetCommonLibraryService } from "../Services/CommonLibraryService"
 import { Modal } from "../Components/Modal"
 import ProjectModal from "./ProjectModal"
+import { useHistory } from "@equinor/fusion"
 
 const Wrapper = styled.div`
     margin: 2rem;
@@ -45,6 +46,7 @@ const DashboardView = () => {
    // const navigate = useNavigate()
 
     const ProjectService = GetProjectService()
+    const history = useHistory()
 
     const [selectedProject, setCurrentProject] = useState<Components.Schemas.CommonLibraryProjectDto | undefined>()
     const [isOpen, setIsOpen] = useState(false)
@@ -81,7 +83,7 @@ const DashboardView = () => {
     const onSelected = async (event: React.ChangeEvent<HTMLSelectElement>) => {
         const project:Project | undefined = projects?.find((p) => p.id === event.currentTarget.selectedOptions[0].value)
         if (project) {
-   //         navigate(ProjectPath(project.id))
+           history.push(ProjectPath(project.id))
         } else {
             const commonlibProject = clp?.find((p) => p.id === event.currentTarget.selectedOptions[0].value)
             setCurrentProject(commonlibProject)

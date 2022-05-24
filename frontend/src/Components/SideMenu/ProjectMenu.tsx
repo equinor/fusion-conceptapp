@@ -50,13 +50,9 @@ interface Props {
     project: Project
 }
 
-interface ProjectMenuParams {
-    _projectId?: string;
-}
-
 function ProjectMenu({ project }: Props) {
-    const { _projectId }: ProjectMenuParams = useParams()
-    const [isOpen, setIsOpen] = useState<boolean>(_projectId === project.id)
+    const { fusionProjectId } = useParams<Record<string, string | undefined>>()
+    const [isOpen, setIsOpen] = useState<boolean>(fusionProjectId === project.id)
 
     return (
         <ExpandableDiv>
@@ -64,7 +60,7 @@ function ProjectMenu({ project }: Props) {
                 <LinkWithoutStyle to={ProjectPath(project.id)}>
                     <MenuItem
                         title={project.name!}
-                        isSelected={_projectId === project.id}
+                        isSelected={fusionProjectId === project.id}
                         icon={folder}
                         isOpen={isOpen}
                         onClick={() => setIsOpen(!isOpen)}
@@ -77,7 +73,7 @@ function ProjectMenu({ project }: Props) {
                         <Item key={`project-menu-item-${index + 1}`}>
                             {projectMenuItem.name === ProjectMenuItemType.OVERVIEW && (
                                 <nav>
-                                    <LinkWithoutStyle to={`/project/${project.id}`}>
+                                    <LinkWithoutStyle to={`/${project.id}`}>
                                         <ProjectMenuItemComponent
                                             item={projectMenuItem}
                                             projectId={project.id}
