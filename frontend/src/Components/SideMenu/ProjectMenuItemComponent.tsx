@@ -44,14 +44,6 @@ interface Props {
     subItems?: Components.Schemas.CaseDto[]
 }
 
-interface ProjectMenuItemComponentParams {
-    _projectId?: string;
-    _caseId?: string;
-}
-
-
-
-
 function ProjectMenuItemComponent({ item, projectId, subItems }: Props) {
     const { fusionProjectId, caseId } = useParams<Record<string, string | undefined>>()
 

@@ -49,13 +49,8 @@ interface Props {
     onImport: (input: string, year: number) => void
 }
 
-interface ImportParams {
-    _projectId?: string;
-    _caseId?: string;
-}
-
 function Import({ onClose, onImport }: Props) {
-    const { _projectId, _caseId }: ImportParams = useParams()
+    const { fusionProjectId, caseId } = useParams<Record<string, string | undefined>>()
     const [dataInput, setDataInput] = useState<string>("")
     const [startYear, setStartYear] = useState(0)
     const [, setProject] = useState<Project>()
@@ -69,14 +64,14 @@ function Import({ onClose, onImport }: Props) {
     useEffect(() => {
         (async () => {
             try {
-                const projectId: string = unwrapProjectId(_projectId)
-                const caseId: string = unwrapCaseId(_caseId)
+                const projectId = unwrapProjectId(fusionProjectId)
+                const _caseId = unwrapCaseId(caseId)
                 const projectResult: Project = await GetProjectService().getProjectByID(projectId)
                 setProject(projectResult)
-                const caseResult: Case = unwrapCase(projectResult.cases.find((o) => o.id === caseId))
+                const caseResult: Case = unwrapCase(projectResult.cases.find((o) => o.id === _caseId))
                 setCase(caseResult)
             } catch (error) {
-                console.error(`[CaseView] Error while fetching project ${_projectId}`, error)
+                console.error(`[CaseView] Error while fetching project ${fusionProjectId}`, error)
             }
         })()
     }, [])
