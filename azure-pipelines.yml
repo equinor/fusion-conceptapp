@@ -11,8 +11,13 @@ pool:
   vmImage: ubuntu-latest
 
 jobs:
+  
+  - job: checkout
+    steps:
+      - checkout: self
   - deployment: deploy_app
     displayName: 'Deploy application'
+    dependsOn: checkout
     environment: QA
     strategy:
       runOnce:
