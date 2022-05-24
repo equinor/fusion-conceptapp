@@ -52,7 +52,7 @@ jobs:
           - task: DownloadPipelineArtifact@2
             inputs:
                 artifact: ConceptApp
-          - script: ls -1 -d "$PWD/"frontend/out/*  
+          - script: ls -1 -d "$PWD/"*  
           - task: FusionApp@2
             displayName: 'Deploying app'
             inputs:
