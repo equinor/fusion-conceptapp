@@ -33,35 +33,33 @@ const App = () => {
             <ErrorBoundary>
                 <BrowserRouter>
                     <Switch>
-
                         <Route path="/:fusionProjectId" exact component={ProjectView}/>
-                        <Route path="/:fusionProjectId/case/:caseId" component={CaseView} />
-                        <Route path="/:fusionProjectId/case/:caseId/surf/:surfId" component={SurfView} />
+                        <Route path="/:fusionProjectId/case/:caseId" exact component={CaseView} />
+                        <Route path="/:fusionProjectId/case/:caseId/surf/:surfId" exact component={SurfView} />
                         <Route
-                            path="/:fusionProjectId/case/:caseId/drainagestrategy/:drainageStrategyId"
+                            path="/:fusionProjectId/case/:caseId/drainagestrategy/:drainageStrategyId" exact 
                             component={DrainageStrategyView}
                         />
                         <Route
-                            path="/:fusionProjectId/case/:caseId/topside/:topsideId"
+                            path="/:fusionProjectId/case/:caseId/topside/:topsideId" exact 
                             component={TopsideView}
                         />
                         <Route
-                            path="/:fusionProjectId/case/:caseId/substructure/:substructureId"
+                            path="/:fusionProjectId/case/:caseId/substructure/:substructureId" exact 
                             component={SubstructureView}
                         />
                         <Route
-                            path="/:fusionProjectId/case/:caseId/transport/:transportId"
+                            path="/:fusionProjectId/case/:caseId/transport/:transportId" exact 
                             component={TransportView}
                         />
                         <Route
-                            path="/:fusionProjectId/case/:caseId/wellproject/:wellProjectId"
+                            path="/:fusionProjectId/case/:caseId/wellproject/:wellProjectId" exact 
                             component={WellProjectView}
                         />
                         <Route
-                            path="/:fusionProjectId/case/:caseId/exploration/:explorationId"
+                            path="/:fusionProjectId/case/:caseId/exploration/:explorationId" exact 
                             component={ExplorationView}
                         />
-
                     </Switch>
                 </BrowserRouter>
             </ErrorBoundary>
