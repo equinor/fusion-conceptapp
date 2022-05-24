@@ -32,6 +32,7 @@ import { WrapperColumn } from "./Asset/StyledAssetComponents"
 import PhysicalUnit from "../Components/PhysicalUnit"
 import Currency from "../Components/Currency"
 import { Case } from "../models/Case"
+import SideMenu from "../Components/SideMenu/SideMenu"
 
 const Wrapper = styled.div`
     margin: 2rem;
@@ -70,6 +71,26 @@ const CreateCaseForm = styled.form`
     > * {
         margin-bottom: 1.5rem;
     }
+`
+
+const ProjectWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100vw;
+`
+
+const Body = styled.div`
+    display: flex;
+    flex-direction: row;
+    flex-row: 1;
+    width: 100%;
+    height: 100%;
+`
+
+const MainView = styled.div`
+    width: calc(100% - 15rem);
+    overflow: scroll;
 `
 
 const ProjectView = () => {
@@ -169,6 +190,10 @@ const ProjectView = () => {
     if (!project) return null
 
     return (
+        <ProjectWrapper>
+        <Body>
+            <SideMenu />
+            <MainView>
         <Wrapper>
             <Header>
                 <Typography variant="h2">{project.name}</Typography>
@@ -268,6 +293,9 @@ const ProjectView = () => {
                 </CreateCaseForm>
             </Modal>
         </Wrapper>
+        </MainView>
+            </Body>
+        </ProjectWrapper>
     )
 }
 

@@ -33,6 +33,8 @@ const App = () => {
             <ErrorBoundary>
                 <BrowserRouter>
                     <Switch>
+                    {/* <Route path="/:fusionProjectId" exact={false} component={ViewsContainer}/> */}
+
                         <Route path="/:fusionProjectId" exact component={ProjectView}/>
                         <Route path="/:fusionProjectId/case/:caseId" exact component={CaseView} />
                         <Route path="/:fusionProjectId/case/:caseId/surf/:surfId" exact component={SurfView} />
