@@ -7,35 +7,52 @@
 trigger:
 - main
 
-pool: server
-  #vmImage: ubuntu-latest
+pool: 
+  vmImage: ubuntu-latest
 
-steps:
-  - task: InvokeRESTAPI@1
-    inputs:
-      connectionType: 'connectedServiceName' # Options: connectedServiceName, connectedServiceNameARM
-      serviceConnection: 'conceptapp-preprod'    
-      method: 'POST' 
-      #headers: '{Content-Type:application/json, PlanUrl: $(system.CollectionUri), ProjectId: $(system.TeamProjectId), HubName: $(system.HostType), PlanId: $(system.PlanId), JobId: $(system.JobId), TimelineId: $(system.TimelineId), TaskInstanceId: $(system.TaskInstanceId), AuthToken: $(system.AccessToken)}' 
-      body: |
-        {
-          "key": "conceptapp",
-          "name": "Digitalization of Concept Development",
-          "shortName": "conceptapp",
-          "description": "ad exercitation in cupidatat",
-          "type": 0,
-          "owners": [
-            "eirik.eikeberg@equinor.com",
-            "eirik.sander-fjeld@equinor.com",
-            "ahmed.abdi@equinor.com"
-          ],
-          "admins": [
-            "eirik.eikeberg@equinor.com",
-            "eirik.sander-fjeld@equinor.com",
-            "ahmed.abdi@equinor.com"
-          ],
-          "hide": false
-        }
-      urlSuffix: '/api/apps?api-version=1.0'
-      #waitForCompletion: 'false' # Options: true, false
-      #successCriteria: # Optional
+jobs:
+  - job: "Build_Fusion_App"
+    steps:
+        - task: UseDotNet@2
+          displayName: "Install Dotnet"
+          inputs:
+              packageType: "sdk"
+              version: "5.0.x"
+       
+        - task: NodeTool@0
+          inputs:
+              versionSpec: "16.x"
+        - task: Npm@1
+          displayName: "Install frontend"
+          inputs:
+              command: "install"
+              workingDir: "frontend"
+        - task: Npm@1
+          displayName: "Bundle frontend"
+          inputs:
+              command: "custom"
+              workingDir: "frontend"
+              customCommand: "run-script build"
+        - task: PublishPipelineArtifact@1
+          inputs:
+              targetPath: "$(Build.SourcesDirectory)/frontend/out/dcd.zip"
+              artifactName: FusionBMT  
+  - deployment: deploy_app
+    dependsOn: Build_Fusion_App      
+    displayName: 'Deploy application'
+    environment: QA
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: FusionApp@2
+            displayName: 'Deploying app'
+            inputs:
+              action: deploy
+              appKey: "dcd"
+              bundlePath: "$(Build.SourcesDirectory)/frontend/out/dcd.zip"
+              fusionCredentials: 'conceptapp-preprod'
+              tokenResource: "f8fbc211-ab05-404b-b94e-e3abdc364f22"
+              portalUrl: "https://pro-s-portal-ci.azurewebsites.net"
+              forceReplaceExisting: "True"
+              ignoreVersionConflict: "True"
