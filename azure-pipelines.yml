@@ -11,30 +11,31 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
-- task: NodeTool@0
-  inputs:
-    versionSpec: "16.x"
-
-- task: Npm@1
-  displayName: "Install frontend"
-  inputs:
-      command: "install"
-      workingDir: "frontend"    
-
-- task: Npm@1
-  displayName: "Bundle frontend"
-  inputs:
-      command: "custom"
-      workingDir: "frontend"
-      customCommand: "run-script build"
-
-- task: PublishPipelineArtifact@1
-  inputs:
-      targetPath: "$(Pipeline.Workspace)/s/frontend/out/bmt.zip"
-      artifactName: DCD
-
-- task: FusionCLI@2
-  inputs:
-    azureSubscription: 'dcd-pipeline-sp'
-    appFolder: 'frontend'
-    command: 'build-app'
+  - task: InvokeRESTAPI@1
+    inputs:
+      connectionType: 'connectedServiceName' # Options: connectedServiceName, connectedServiceNameARM
+      serviceConnection: 'conceptapp-preprod'    
+      method: 'POST' 
+      #headers: '{Content-Type:application/json, PlanUrl: $(system.CollectionUri), ProjectId: $(system.TeamProjectId), HubName: $(system.HostType), PlanId: $(system.PlanId), JobId: $(system.JobId), TimelineId: $(system.TimelineId), TaskInstanceId: $(system.TaskInstanceId), AuthToken: $(system.AccessToken)}' 
+      body: |
+      {
+        "key": "conceptapp",
+        "name": "Digitalization of Concept Development",
+        "shortName": "conceptapp",
+        "description": "ad exercitation in cupidatat",
+        "type": 0,
+        "owners": [
+          "eirik.eikeberg@equinor.com",
+          "eirik.sander-fjeld@equinor.com",
+          "ahmed.abdi@equinor.com"
+        ],
+        "admins": [
+          "eirik.eikeberg@equinor.com",
+          "eirik.sander-fjeld@equinor.com",
+          "ahmed.abdi@equinor.com"
+        ],
+        "hide": false
+      }
+      urlSuffix: '/api/apps?api-version=1.0'
+      #waitForCompletion: 'false' # Options: true, false
+      #successCriteria: # Optional
