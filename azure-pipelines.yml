@@ -11,11 +11,7 @@ pool:
   vmImage: ubuntu-latest
 
 jobs:
-  
-  - job: checkout
-    steps:
-      - checkout: self
-      - script: ls -1 -d "$PWD/"frontend/out/*
+   
   - job: "Build_Fusion_App"
     steps:
       - task: UseDotNet@2
@@ -52,7 +48,6 @@ jobs:
           - task: DownloadPipelineArtifact@2
             inputs:
                 artifact: ConceptApp
-          - script: ls -1 -d "$PWD/"*  
           - task: FusionApp@2
             displayName: 'Deploying app'
             inputs:
