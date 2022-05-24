@@ -15,7 +15,7 @@ jobs:
   - job: checkout
     steps:
       - checkout: self
-      - script: ls -lart  
+      - script: ls -lart frontend/ 
     
   - deployment: deploy_app
     displayName: 'Deploy application'
