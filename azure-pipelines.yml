@@ -7,8 +7,8 @@
 trigger:
 - main
 
-pool:
-  vmImage: ubuntu-latest
+pool: server
+  #vmImage: ubuntu-latest
 
 steps:
   - task: InvokeRESTAPI@1
