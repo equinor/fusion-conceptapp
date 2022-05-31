@@ -43,7 +43,7 @@ stages:
           - task: PublishPipelineArtifact@1
             inputs:
                 targetPath: "${{ parameters.workSpace }}/s/frontend/out/conceptapp.zip"
-                artifactName: ConceptAppPack
+                artifactName: ConceptApp
 
       - job: "Build_backend_container_and_Push_To_acr"
         steps:
