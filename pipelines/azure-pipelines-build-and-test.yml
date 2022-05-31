@@ -1,0 +1,141 @@
+trigger:
+  - main
+
+pr:
+  - main
+
+pool:
+  vmImage: "ubuntu-latest"
+
+variables:
+  - group: DCD
+  - name: modelChanged
+    value: ""
+
+jobs:
+  - job: Lint_CSharp
+    continueOnError: true
+    steps:
+      - task: UseDotNet@2
+        inputs:
+          packageType: "sdk"
+          version: "6.0.100"
+      - task: DotNetCoreCLI@2
+        displayName: "Install dotnet-format"
+        inputs:
+          command: custom
+          custom: tool
+          arguments: "install -g dotnet-format"
+      - task: DotNetCoreCLI@2
+        displayName: "Lint backend"
+        inputs:
+          command: custom
+          custom: format
+          arguments: "--verify-no-changes"
+          workingDirectory: "backend/api"
+
+      - task: DotNetCoreCLI@2
+        displayName: "Lint backend tests"
+        inputs:
+          command: custom
+          custom: format
+          arguments: "--verify-no-changes"
+          workingDirectory: "backend/tests"
+
+  - job: Build_API
+    steps:
+      - task: UseDotNet@2
+        inputs:
+          packageType: "sdk"
+          version: "6.0.x"
+          includePreviewVersions: true # Required for preview versions
+      - task: DotNetCoreCLI@2
+        name: Build_Backend
+        inputs:
+          command: "build"
+          workingDirectory: "backend/api"
+
+  - job: Build_Frontend
+    steps:
+      - task: NodeTool@0
+        inputs:
+          versionSpec: "16.x"
+      - task: Npm@1
+        displayName: "Npm Install"
+        inputs:
+          command: "install"
+          workingDir: "frontend"
+      - task: Npm@1
+        displayName: "Run Script Build"
+        inputs:
+          command: "custom"
+          workingDir: "frontend"
+          customCommand: "run-script build"
+      - task: Npm@1
+        displayName: "Autogenerate-Models-Build"
+        inputs:
+          command: "custom"
+          workingDir: "frontend"
+          customCommand: "run autogenerate-models-build"
+      - powershell: |
+          $fileA = "types.d.ts"
+          $fileB = "types-azuredevops.d.ts"
+          $filesstring = git diff-tree --no-commit-id --name-only -r $(Build.SourceVersion)
+          $files = $filesstring -split " "
+          $modelPath = "backend/api/Dtos/*"
+          foreach ($file in $files) {
+              Write-Host $file
+              if($file -like $modelPath) {
+                if(Compare-Object -ReferenceObject $(Get-Content $fileA) -DifferenceObject $(Get-Content $fileB)) {
+                    Write-Host "The Types file are different"
+                } else {
+                    Write-Host "The Types file are identical"
+                    exit 1
+                }
+              }
+          }
+        workingDirectory: $(Build.SourcesDirectory)/frontend/src/
+        displayName: "Check if Models has been updated"
+        continueOnError: true
+  - job: Test_Backend
+    steps:
+      - task: UseDotNet@2
+        inputs:
+          packageType: "sdk"
+          version: "6.0.x"
+          includePreviewVersions: true # Required for preview versions
+
+      - task: AzureCli@1
+        inputs:
+          azureSubscription: "dcd-pipeline-sp"
+          scriptLocation: "inlineScript"
+          inlineScript: "dotnet test tests.csproj --logger trx"
+          workingDirectory: "$(Build.SourcesDirectory)/backend/tests/"
+        env:
+          AppConfiguration__ConnectionString: $(azureAppConfigConnString)
+      - script: |
+          dotnet tool install JetBrains.dotCover.GlobalTool -g
+          cd $(Build.SourcesDirectory)/backend/tests/
+          dotnet dotcover test
+          dotnet dotcover report --source=dotCover.Output.dcvr --reportType=DetailedXml          
+          bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r dotCover.Output.xml
+        displayName: "Backend Tests With Code Coverage"
+  - job: Test_Frontend
+    steps:
+      - task: NodeTool@0
+        inputs:
+          versionSpec: "16.x"
+      - task: Npm@1
+        name: Install
+        inputs:
+          command: "install"
+          workingDir: "frontend"
+      - task: Npm@1
+        name: Run_Frontend_Tests
+        inputs:
+          command: "custom"
+          workingDir: "frontend"
+          customCommand: "run test:ci"
+      - script: |
+          bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r $(Build.SourcesDirectory)/frontend/coverage/clover.xml
+        displayName: Upload Code Coverage
