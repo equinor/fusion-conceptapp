@@ -21,8 +21,8 @@ stages:
                     deploy:
                         steps:
                         - task: DownloadPipelineArtifact@2
-                            inputs:
-                                artifact: ConceptApp
+                          inputs:
+                            artifact: ConceptApp
                         - task: FusionApp@2
                             displayName: 'Deploying app'
                             inputs:
