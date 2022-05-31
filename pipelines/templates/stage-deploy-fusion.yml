@@ -24,8 +24,8 @@ stages:
                           inputs:
                             artifact: ConceptApp
                         - task: FusionApp@2
-                            displayName: 'Deploying app'
-                            inputs:
+                          displayName: 'Deploying app'
+                          inputs:
                             action: deploy
                             appKey: 'conceptapp'
                             bundlePath: '$(Agent.BuildDirectory)/conceptapp.zip'
