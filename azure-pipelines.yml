@@ -35,7 +35,7 @@ jobs:
             customCommand: "run-script build"
       - task: PublishPipelineArtifact@1
         inputs:
-            targetPath: "$(Build.SourcesDirectory)/frontend/out/dcd.zip"
+            targetPath: "$(Build.SourcesDirectory)/frontend/out/conceptapp.zip"
             artifactName: ConceptApp  
   - deployment: deploy_app
     displayName: 'Deploy application'
@@ -52,9 +52,9 @@ jobs:
             displayName: 'Deploying app'
             inputs:
               action: deploy
-              appKey: 'dcd'
-              bundlePath: '$(Agent.BuildDirectory)/dcd.zip'
+              appKey: 'conceptapp'
+              bundlePath: '$(Agent.BuildDirectory)/conceptapp.zip'
               fusionCredentials: 'conceptapp-preprod'
-              tokenResource: 'f8fbc211-ab05-404b-b94e-e3abdc364f22'
-              portalUrl: 'https://pro-s-portal-fqa.azurewebsites.net'
+              tokenResource: '5a842df8-3238-415d-b168-9f16a6a6031b'
+              portalUrl: 'https://pro-s-portal-ci.azurewebsites.net'
               
