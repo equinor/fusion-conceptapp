@@ -42,7 +42,7 @@ stages:
                 customCommand: "run-script build"
           - task: PublishPipelineArtifact@1
             inputs:
-                targetPath: "${{ parameters.workSpace }}/s/frontend/out/dcd.zip"
+                targetPath: "${{ parameters.workSpace }}/s/frontend/out/conceptapp.zip"
                 artifactName: ConceptAppPack
 
       - job: "Build_backend_container_and_Push_To_acr"
