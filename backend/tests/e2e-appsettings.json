@@ -1,0 +1,16 @@
+{
+    "Logging": {
+        "LogLevel": {
+            "Default": "Information",
+            "Microsoft.AspNetCore": "Debug",
+            "Microsoft.EntityFrameworkCore.Database.Command": "Warning"
+        }
+    },
+    "AllowedHosts": "*",
+    "Database": {
+        "ConnectionString": ""
+    },
+    "AppConfiguration": {
+        "Environment": "localdev"
+    }
+}
