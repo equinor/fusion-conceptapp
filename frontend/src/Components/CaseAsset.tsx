@@ -1,7 +1,7 @@
 import React, { Dispatch, SetStateAction } from "react"
 import { Button } from "@equinor/eds-core-react"
 import styled from "styled-components"
-import { Redirect } from "react-router-dom"
+import { Redirect, useHistory } from "react-router-dom"
 import {  } from "react-router-dom"
 import { Project } from "../models/Project"
 import { Case } from "../models/Case"
@@ -39,7 +39,7 @@ const CaseAsset = ({
     setCase,
     caseId,
 }: Props) => {
-
+    const history = useHistory()
     enum AssetLink {
         drainageStrategyLink = "drainageStrategyLink",
         explorationLink = "explorationLink",
@@ -74,7 +74,7 @@ const CaseAsset = ({
         event.preventDefault()
 
         try {
-            return <Redirect push to={`${type.toLowerCase()}/${id}`}/>
+            history.push(`${caseId}/${type.toLowerCase()}/${id}`)
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)
         }
@@ -82,7 +82,7 @@ const CaseAsset = ({
 
     const submitCreateAsset = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, type: string) => {
         event.preventDefault()
-        return <Redirect push to={`${type.toLowerCase()}/${EMPTY_GUID}`}/>
+        history.push(`${caseId}/${type.toLowerCase()}/${EMPTY_GUID}`)
     }
 
     return (

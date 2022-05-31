@@ -1,7 +1,7 @@
 import { FC, useEffect } from 'react';
 import { Button, usePopoverRef } from '@equinor/fusion-components';
 import React, { VoidFunctionComponent } from 'react';
-import { registerApp, ContextTypes, Context, useAppConfig, useFusionContext, useCurrentUser } from '@equinor/fusion'
+import { registerApp, ContextTypes, Context, useAppConfig, useFusionContext, useCurrentUser, useNotificationCenter } from '@equinor/fusion'
 import { ApplicationInsights } from "@microsoft/applicationinsights-web"
 import { ReactPlugin } from '@microsoft/applicationinsights-react-js'
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
@@ -15,9 +15,9 @@ import App from './App';
 const browserHistory = createBrowserHistory()
 const reactPlugin = new ReactPlugin()
 
-const Start: VoidFunctionComponent = () => {
-    const fusionContext = useFusionContext()
-    const currentUser = useCurrentUser()
+const Start: FC = () => {
+    const currentUser = useCurrentUser();
+    const sendNotification = useNotificationCenter();
     const runtimeConfig = useAppConfig()
     const [hasLoggedIn, setHasLoggedIn] = React.useState(false)
     const [apiUrl, setApiUrl] = React.useState('')
@@ -39,40 +39,13 @@ const Start: VoidFunctionComponent = () => {
     }, [])
 */
 
-    React.useEffect(() => {
-        (async () => {
-            try {
-                // console.log("1")
-                // const appConfig = await RetrieveConfigFromAzure()
-                // // const aa = await fusionContext.auth.container.loginAsync(appConfig.azureAd.clientId)
-                // // console.log(aa)
-                // // const isLoggedIn = await fusionContext.auth.container.registerAppAsync(appConfig.azureAd.clientId, [])
-                // // console.log(isLoggedIn)
-                // // if (!isLoggedIn) {
-                // //     await fusionContext.auth.container.loginAsync(appConfig.azureAd.clientId)
-                // //     return
-                // // }
-                // return (<p>{useCurrentUser()}</p>)
-                // console.log(useCurrentUser())
-                
-                // var b = 2
-                // var a = b
-                // console.log("2")
-                // //setManniAppConfig(appConfig)
 
-               
-                // console.log("3")
+if (!currentUser) {
+    return null;
+}
 
-                // const asd = ""
-            } catch (error) {
-                console.error("[App] Error while retreiving AppConfig from Azure", error)
-            }
-        })()
-    }, [])
-
-    return (
-        <App />
-    );
+return (
+    <App/>)
 };
 
 registerApp('dcd', {
@@ -81,6 +54,7 @@ registerApp('dcd', {
     context: {
         types: [ContextTypes.ProjectMaster],
         buildUrl: (context: Context | null, url: string) => {
+            console.log("Context: ", context)
             if (!context) return ''
             return `/${context.id}`
         },
