@@ -74,8 +74,7 @@ stages:
                           '@
 
                           $result = Invoke-RestMethod -Uri $url -Headers $Headers -Body $body -Method Post                          
-                          $pipelineName = $result.name
-                          Write-Host $pipelineName
+                          $pipelineName = $result.name                         
                           Write-Host "##vso[task.setvariable variable=radixJobName;]$pipelineName"
                           Write-Host "Done. JobName:" $(radixJobName)
                 - task: PowerShell@2
