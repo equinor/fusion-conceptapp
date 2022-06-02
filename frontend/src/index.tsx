@@ -54,6 +54,7 @@ registerApp('conceptapp', {
     context: {
         types: [ContextTypes.ProjectMaster],
         buildUrl: (context: Context | null, url: string) => {
+            console.log(RetrieveConfigFromAzure)
             console.log("Context: ", context)
             if (!context) return ''
             return `/${context.id}`
