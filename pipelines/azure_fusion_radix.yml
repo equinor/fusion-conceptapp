@@ -35,7 +35,7 @@ stages:
         portalUrl: "https://pro-s-portal-ci.azurewebsites.net/"
         buildId: $(Build.BuildId)
         radixToken: $(RadixToken)
-        branch: q
+        branch: main
         DBContext: " "
         FusionEnvId: $(FusionAppIdCi)
         FusionServiceConnection: 'conceptapp-preprod'
@@ -48,7 +48,7 @@ stages:
         portalUrl: "https://pro-s-portal-fqa.azurewebsites.net/"
         buildId: $(Build.BuildId)
         radixToken: $(RadixToken)
-        branch: qa
+        branch: main
         DBContext: " "
         FusionEnvId: $(FusionAppIdQA)
         FusionServiceConnection: 'conceptapp-preprod'
@@ -61,7 +61,7 @@ stages:
         portalUrl: "https://pro-s-portal-fprd.azurewebsites.net"
         buildId: $(Build.BuildId)
         radixToken: $(RadixToken)
-        branch: prod
+        branch: main
         DBContext: " "
         FusionEnvId: $(FusionAppIdQA)
         FusionServiceConnection: 'conceptapp-preprod'
