@@ -48,7 +48,7 @@ return (
     <App/>)
 };
 
-registerApp('dcd', {
+registerApp('conceptapp', {
     AppComponent: Start,
     name: 'DCD Concept App',
     context: {
