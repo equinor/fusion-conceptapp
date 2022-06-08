@@ -117,4 +117,25 @@ stages:
                               [Environment]::Exit(1)
 
                           }
-          
+          - job: AddDbMigrations_${{ parameters.envshortname }}
+            dependsOn: Trigger_Radix_Deploy_${{ parameters.envshortname }}
+            steps:
+                - task: DotNetCoreCLI@2
+                  displayName: Install dotnet-ef
+                  inputs:
+                      command: "custom"
+                      custom: "tool"
+                      arguments: "install --global dotnet-ef"
+                      
+                - script: |
+                    az login -u $(AZURE_CLIENT_ID) -p $(AZURE_CLIENT_SECRET)
+
+                - task: DotNetCoreCLI@2
+                  displayName: "Apply DB migrations"
+                  inputs:
+                      command: "custom"
+                      custom: "ef"
+                      arguments: "database update --connection \"${{ parameters.DBContext }}\" --verbose"
+                      workingDirectory: "$(Build.SourcesDirectory)/backend/api"
+            
+            
