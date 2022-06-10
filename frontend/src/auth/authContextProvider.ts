@@ -1,5 +1,5 @@
 export const loginRequest = {
-    scopes: ["api://65487472-b6a9-4671-9248-1d97fff300ea/user_impersonation"],
+    scopes: ["api://9b125a0c-4907-43b9-8db2-ff405d6b0524/user_impersonation"],
 }
 
 export const graphConfig = {
