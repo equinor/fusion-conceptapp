@@ -1,5 +1,7 @@
 import { AppConfigurationClient } from "@azure/app-configuration"
 import { LogLevel } from "@azure/msal-browser"
+import { useAppConfig} from '@equinor/fusion'
+
 
 export const AzureAd = {
     clientId: "65487472-b6a9-4671-9248-1d97fff300ea",
@@ -10,9 +12,15 @@ export const AzureAd = {
 export const fusionApiScope = ["97978493-9777-4d48-b38a-67b0b9cd88d2/.default"]
 
 export const appInsightsInstrumentationKey = "f218caa9-c1a4-4c31-973b-c787a90af4ce"
-
-const APP_CONFIG_CONN_STRING = process.env.REACT_APP_AZURE_APP_CONFIG_CONNECTION_STRING ?? ""
+const runtimeConfig = useAppConfig()
 const ENV_NAME = process.env.REACT_APP_ENVIRONMENT ?? "localdev"
+const APP_CONFIG_CONN_STRING = process.env.REACT_APP_AZURE_APP_CONFIG_CONNECTION_STRING ?? ""
+if(runtimeConfig.value) {
+    console.log(runtimeConfig.value);
+    // const APP_CONFIG_CONN_STRING = process.env.REACT_APP_AZURE_APP_CONFIG_CONNECTION_STRING ?? runtimeConfig.value.environment['REACT_APP_AZURE_APP_CONFIG_CONNECTION_STRING']
+    
+}
+
 
 export async function RetrieveConfigFromAzure() {
     console.log(`[RetrieveConfigFromAzure] Loading App Config for ${ENV_NAME}`)

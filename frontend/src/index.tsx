@@ -16,33 +16,35 @@ const browserHistory = createBrowserHistory()
 const reactPlugin = new ReactPlugin()
 
 const Start: FC = () => {
-    const currentUser = useCurrentUser();
-    const sendNotification = useNotificationCenter();
-    const runtimeConfig = useAppConfig()
-    const [hasLoggedIn, setHasLoggedIn] = React.useState(false)
-    const [apiUrl, setApiUrl] = React.useState('')
-    const [manniAppConfig, setManniAppConfig] = React.useState<any>()
-/*
-    const login = async () => {
-        const isLoggedIn = await fusionContext.auth.container.registerAppAsync(config.AD_APP_ID, [])
-
-        if (!isLoggedIn) {
-            await fusionContext.auth.container.loginAsync(config.AD_APP_ID)
-            return
+    (async () => {
+        const appConfig = await RetrieveConfigFromAzure()
+        const currentUser = useCurrentUser();
+        const fusionContext = useFusionContext()
+        const sendNotification = useNotificationCenter();
+        const runtimeConfig = useAppConfig()
+        const [hasLoggedIn, setHasLoggedIn] = React.useState(false)
+        const [apiUrl, setApiUrl] = React.useState('')
+        const [manniAppConfig, setManniAppConfig] = React.useState<any>()
+    
+        const login = async () => {
+            const isLoggedIn = await fusionContext.auth.container.registerAppAsync(appConfig.azureAd.clientId, [])
+    
+            if (!isLoggedIn) {
+                await fusionContext.auth.container.loginAsync(appConfig.azureAd.clientId)
+                return
+            }
+    
+            setHasLoggedIn(true)
         }
-
-        setHasLoggedIn(true)
-    }
-
-    React.useEffect(() => {
-        login()
-    }, [])
-*/
-
-
-if (!currentUser) {
-    return null;
-}
+    
+        React.useEffect(() => {
+            login()
+        }, []) 
+        if (!currentUser) {
+            return null;
+        }   
+    })
+    
 
 return (
     <App/>)
