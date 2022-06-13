@@ -1,71 +1,18 @@
-import { FC, useEffect } from 'react';
-import { Button, usePopoverRef } from '@equinor/fusion-components';
-import React, { VoidFunctionComponent } from 'react';
-import { registerApp, ContextTypes, Context, useAppConfig, useFusionContext, useCurrentUser, useNotificationCenter } from '@equinor/fusion'
-import { ApplicationInsights } from "@microsoft/applicationinsights-web"
-import { ReactPlugin } from '@microsoft/applicationinsights-react-js'
-import { BrowserRouter, Switch, Route } from 'react-router-dom'
-import { ErrorBoundary } from '@equinor/fusion-components'
+import { Context, ContextTypes, registerApp } from "@equinor/fusion"
+import createApp from "@equinor/fusion-framework-react-app"
+import App from "./app/App"
 
-import * as styles from './styles.less';
-import { RetrieveConfigFromAzure } from './config';
-import { createBrowserHistory } from 'history';
-import App from './App';
+export const render = createApp(App)
 
-const browserHistory = createBrowserHistory()
-const reactPlugin = new ReactPlugin()
-
-const Start: FC = () => {
-    (async () => {
-        const appConfig = await RetrieveConfigFromAzure()
-        const currentUser = useCurrentUser();
-        const fusionContext = useFusionContext()
-        const sendNotification = useNotificationCenter();
-        const runtimeConfig = useAppConfig()
-        const [hasLoggedIn, setHasLoggedIn] = React.useState(false)
-        const [apiUrl, setApiUrl] = React.useState('')
-        const [manniAppConfig, setManniAppConfig] = React.useState<any>()
-    
-        const login = async () => {
-            const isLoggedIn = await fusionContext.auth.container.registerAppAsync(appConfig.azureAd.clientId, [])
-    
-            if (!isLoggedIn) {
-                await fusionContext.auth.container.loginAsync(appConfig.azureAd.clientId)
-                return
-            }
-    
-            setHasLoggedIn(true)
-        }
-    
-        React.useEffect(() => {
-            login()
-        }, []) 
-        if (!currentUser) {
-            return null;
-        }   
-    })
-    
-
-return (
-    <App/>)
-};
-
-registerApp('conceptapp', {
-    AppComponent: Start,
-    name: 'DCD Concept App',
+registerApp("conceptapp", {
+    render,
+    AppComponent: App,
     context: {
         types: [ContextTypes.ProjectMaster],
-        buildUrl: (context: Context | null, url: string) => {
-            console.log("Context: ", context)
-            if (!context) return ''
-            return `/${context.id}`
-        },
-        getContextFromUrl: (url: string) => {
-            return url.split('/')[1]
-        },
+        buildUrl: (context: Context | null) => (context ? `/${context.id}` : ""),
+        getContextFromUrl: (url: string) => url.split("/")[1],
     },
+    name: "DCD Concept App",
 })
 
-if (module.hot) {
-    module.hot.accept();
-}
+if (module.hot) module.hot.accept()

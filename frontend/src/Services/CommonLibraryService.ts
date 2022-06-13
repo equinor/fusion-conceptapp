@@ -10,9 +10,9 @@ export class __CommonLibraryService extends __BaseService {
     }
 }
 
-export function GetCommonLibraryService() {
+export async function GetCommonLibraryService() {
     return new __CommonLibraryService({
         ...config.CommonLibraryService,
-        accessToken: GetToken(FusionAccessTokenKey)!,
+        accessToken: await GetToken(FusionAccessTokenKey)!,
     })
 }

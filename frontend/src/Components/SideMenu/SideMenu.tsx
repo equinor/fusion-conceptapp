@@ -32,7 +32,7 @@ const StyledDivider = styled(Divider)`
 
 function SideMenu() {
     const [project, setProject] = useState<Project>()
-    //const navigate = useNavigate()
+    // const navigate = useNavigate()
 
     const { fusionProjectId } = useParams<Record<string, string | undefined>>()
 
@@ -41,7 +41,7 @@ function SideMenu() {
             (async () => {
                 try {
                     const projectId = unwrapProjectId(fusionProjectId)
-                    const fetchedProject = await GetProjectService().getProjectByID(projectId)
+                    const fetchedProject = await (await GetProjectService()).getProjectByID(projectId)
                     setProject(fetchedProject)
                 } catch (error) {
                     console.error()

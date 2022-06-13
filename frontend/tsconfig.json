@@ -1,24 +1,22 @@
 {
   "compilerOptions": {
-    "declaration": true,
-    "importHelpers": true,
-    "sourceMap": true,
-    "module": "es6",
-    "outDir": "lib",
-    "rootDir": "src",
-    "strict": true,
-    "target": "es6",
-    "composite": false,
-    "skipLibCheck": true,
-    "jsx": "react-jsx",
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-    "noEmit": true,
-    "moduleResolution": "node"
+      "allowSyntheticDefaultImports": true,
+      "composite": false,
+      "declaration": true,
+      "esModuleInterop": true,
+      "forceConsistentCasingInFileNames": true,
+      "importHelpers": true,
+      "jsx": "react-jsx",
+      "lib": ["DOM", "ES2021"],
+      "module": "ES6",
+      "moduleResolution": "Node",
+      "noEmit": true,
+      "outDir": "lib",
+      "rootDir": "src",
+      "skipLibCheck": true,
+      "sourceMap": true,
+      "strict": true,
+      "target": "ES2021"
   },
-  "include": [
-    "src/**/*",
-    "./css-modules.d.ts",
-    "./src/types.d.ts"
-  ],
+  "include": ["src/**/*", "./css-modules.d.ts"]
 }

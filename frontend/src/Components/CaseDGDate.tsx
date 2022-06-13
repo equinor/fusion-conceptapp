@@ -54,10 +54,9 @@ const CaseDGDate = ({
     dGType,
     dGName,
 }: Props) => {
-
     const [caseDgDate, setCaseDgDate] = useState<Date>()
 
-    const { _caseId }: CaseDGDateParams = useParams();
+    const { _caseId }: CaseDGDateParams = useParams()
 
     useEffect(() => {
         (async () => {
@@ -75,7 +74,7 @@ const CaseDGDate = ({
             const unwrappedCase: Case = unwrapCase(caseItem)
             const caseDto = Case.Copy(unwrappedCase)
             caseDto[dGType] = caseDgDate
-            const newProject = await GetCaseService().updateCase(caseDto)
+            const newProject = await (await GetCaseService()).updateCase(caseDto)
             setProject(newProject)
             const caseResult = newProject.cases.find((o) => o.id === _caseId)
             setCase(caseResult)

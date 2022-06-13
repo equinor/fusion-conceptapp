@@ -122,7 +122,7 @@ const ProjectModal = ({
         if (pressedOkButton === true) {
             try {
                 project = convertCommonLibProjectToProject(selectedProject)
-                await GetProjectService().createProject(project).then((createdProject) => {
+                await (await GetProjectService()).createProject(project).then((createdProject) => {
                     closeModal()
              //       navigate(`/project/${createdProject.projectId}`)
                 })

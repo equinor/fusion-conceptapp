@@ -2,7 +2,7 @@ import React, { Dispatch, SetStateAction } from "react"
 import { Button } from "@equinor/eds-core-react"
 import styled from "styled-components"
 import { Redirect, useHistory } from "react-router-dom"
-import {  } from "react-router-dom"
+
 import { Project } from "../models/Project"
 import { Case } from "../models/Case"
 import LinkAsset from "./LinkAsset"
@@ -57,7 +57,7 @@ const CaseAsset = ({
 
             caseDto[link] = event.currentTarget.selectedOptions[0].value
 
-            const newProject: Project = await GetCaseService().updateCase(caseDto)
+            const newProject: Project = await (await GetCaseService()).updateCase(caseDto)
             setProject(newProject)
             const caseResult: Case = unwrapCase(newProject.cases.find((o) => o.id === caseId))
             setCase(caseResult)

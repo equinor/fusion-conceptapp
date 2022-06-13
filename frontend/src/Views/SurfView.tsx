@@ -1,9 +1,11 @@
+/* eslint-disable max-len */
 import { useEffect, useState } from "react"
 import {
     Input, Label, Typography,
 } from "@equinor/eds-core-react"
 
 import { useParams } from "react-router"
+import styled from "styled-components"
 import { Surf } from "../models/assets/surf/Surf"
 import { Case } from "../models/Case"
 import { Project } from "../models/Project"
@@ -25,7 +27,7 @@ import { SurfCostProfile } from "../models/assets/surf/SurfCostProfile"
 import { SurfCessationCostProfile } from "../models/assets/surf/SurfCessationCostProfile"
 import AssetCurrency from "../Components/AssetCurrency"
 import SideMenu from "../Components/SideMenu/SideMenu"
-import styled from "styled-components"
+import { IAssetService } from "../Services/IAssetService"
 
 const ProjectWrapper = styled.div`
     display: flex;
@@ -67,13 +69,16 @@ const SurfView = () => {
     const [costProfile, setCostProfile] = useState<SurfCostProfile>()
     const [cessationCostProfile, setCessationCostProfile] = useState<SurfCessationCostProfile>()
     const [currency, setCurrency] = useState<Components.Schemas.Currency>(0)
+    const [surfService, setSurfService] = useState<IAssetService>()
 
     useEffect(() => {
         (async () => {
             try {
                 const projectId: string = unwrapProjectId(fusionProjectId)
-                const projectResult: Project = await GetProjectService().getProjectByID(projectId)
+                const projectResult: Project = await (await GetProjectService()).getProjectByID(projectId)
                 setProject(projectResult)
+                const service = await GetSurfService()
+                setSurfService(service)
             } catch (error) {
                 console.error(`[CaseView] Error while fetching project ${fusionProjectId}`, error)
             }
@@ -158,146 +163,146 @@ const SurfView = () => {
 
     return (
         <ProjectWrapper>
-        <Body>
-            <SideMenu />
-            <MainView>
-        <AssetViewDiv>
-            <Wrapper>
-                <Typography variant="h2">Surf</Typography>
-                <Save
-                    name={surfName}
-                    setHasChanges={setHasChanges}
-                    hasChanges={hasChanges}
-                    setAsset={setSurf}
-                    setProject={setProject}
-                    asset={surf!}
-                    assetService={GetSurfService()}
-                    assetType={AssetTypeEnum.surfs}
-                />
-            </Wrapper>
-            <AssetName
-                setName={setSurfName}
-                name={surfName}
-                setHasChanges={setHasChanges}
-            />
-            <AssetCurrency
-                setCurrency={setCurrency}
-                setHasChanges={setHasChanges}
-                currentValue={currency}
-            />
-            <Wrapper>
-                <WrapperColumn>
-                    <Label htmlFor="name" label="Artificial lift" />
-                    <Input
-                        id="artificialLift"
-                        disabled
-                        defaultValue={GetArtificialLiftName(surf?.artificialLift)}
-                    />
-                </WrapperColumn>
-            </Wrapper>
+            <Body>
+                <SideMenu />
+                <MainView>
+                    <AssetViewDiv>
+                        <Wrapper>
+                            <Typography variant="h2">Surf</Typography>
+                            <Save
+                                name={surfName}
+                                setHasChanges={setHasChanges}
+                                hasChanges={hasChanges}
+                                setAsset={setSurf}
+                                setProject={setProject}
+                                asset={surf!}
+                                assetService={surfService!}
+                                assetType={AssetTypeEnum.surfs}
+                            />
+                        </Wrapper>
+                        <AssetName
+                            setName={setSurfName}
+                            name={surfName}
+                            setHasChanges={setHasChanges}
+                        />
+                        <AssetCurrency
+                            setCurrency={setCurrency}
+                            setHasChanges={setHasChanges}
+                            currentValue={currency}
+                        />
+                        <Wrapper>
+                            <WrapperColumn>
+                                <Label htmlFor="name" label="Artificial lift" />
+                                <Input
+                                    id="artificialLift"
+                                    disabled
+                                    defaultValue={GetArtificialLiftName(surf?.artificialLift)}
+                                />
+                            </WrapperColumn>
+                        </Wrapper>
 
-            <Wrapper>
-                <Typography variant="h4">DG3</Typography>
-                <Dg4Field>
-                    <Input disabled defaultValue={caseItem?.DG3Date?.toLocaleDateString("en-CA")} type="date" />
-                </Dg4Field>
-                <Typography variant="h4">DG4</Typography>
-                <Dg4Field>
-                    <Input disabled defaultValue={caseItem?.DG4Date?.toLocaleDateString("en-CA")} type="date" />
-                </Dg4Field>
-            </Wrapper>
-            <Wrapper>
-                <NumberInput
-                    setHasChanges={setHasChanges}
-                    setValue={setProducerCount}
-                    value={producerCount ?? 0}
-                    integer
-                    disabled
-                    label="Producer count"
-                />
-                <NumberInput
-                    setHasChanges={setHasChanges}
-                    setValue={setGasInjectorCount}
-                    value={gasInjectorCount ?? 0}
-                    integer
-                    disabled
-                    label="Gas injector count"
-                />
-                <NumberInput
-                    setHasChanges={setHasChanges}
-                    setValue={setWaterInjectorCount}
-                    value={waterInjectorCount ?? 0}
-                    integer
-                    disabled
-                    label="Water injector count"
-                />
-            </Wrapper>
-            <Wrapper>
-                <NumberInput
-                    setHasChanges={setHasChanges}
-                    setValue={setRiserCount}
-                    value={riserCount ?? 0}
-                    integer
-                    label="Riser count"
-                />
-                <NumberInput
-                    setHasChanges={setHasChanges}
-                    setValue={setTemplateCount}
-                    value={templateCount ?? 0}
-                    integer
-                    label="Template count"
-                />
-                <NumberInput
-                    setHasChanges={setHasChanges}
-                    setValue={setInfieldPipelineSystemLength}
-                    value={infieldPipelineSystemLength ?? 0}
-                    integer
-                    label={`Length of production lines ${project?.physUnit === 0 ? "(km)" : "(Oilfield)"}`}
-                />
-                <NumberInput
-                    setHasChanges={setHasChanges}
-                    setValue={setUmbilicalSystemLength}
-                    value={umbilicalSystemLength ?? 0}
-                    integer
-                    label={`Length of umbilical system ${project?.physUnit === 0 ? "(km)" : "(Oilfield)"}`}
-                />
-            </Wrapper>
-            <Maturity
-                setMaturity={setMaturity}
-                currentValue={maturity}
-                setHasChanges={setHasChanges}
-            />
-            <ProductionFlowline
-                setHasChanges={setHasChanges}
-                currentValue={productionFlowline}
-                setProductionFlowline={setProductionFlowline}
-            />
-            <TimeSeries
-                dG4Year={caseItem?.DG4Date?.getFullYear()}
-                setTimeSeries={setCostProfile}
-                setHasChanges={setHasChanges}
-                timeSeries={costProfile}
-                timeSeriesTitle={`Cost profile ${currency === 0 ? "(MUSD)" : "(MNOK)"}`}
-                firstYear={firstTSYear!}
-                lastYear={lastTSYear!}
-                setFirstYear={setFirstTSYear!}
-                setLastYear={setLastTSYear}
-            />
-            <TimeSeries
-                dG4Year={caseItem?.DG4Date?.getFullYear()}
-                setTimeSeries={setCessationCostProfile}
-                setHasChanges={setHasChanges}
-                timeSeries={cessationCostProfile}
-                timeSeriesTitle={`Cessation cost profile ${currency === 0 ? "(MUSD)" : "(MNOK)"}`}
-                firstYear={firstTSYear!}
-                lastYear={lastTSYear!}
-                setFirstYear={setFirstTSYear!}
-                setLastYear={setLastTSYear}
-            />
-        </AssetViewDiv>
+                        <Wrapper>
+                            <Typography variant="h4">DG3</Typography>
+                            <Dg4Field>
+                                <Input disabled defaultValue={caseItem?.DG3Date?.toLocaleDateString("en-CA")} type="date" />
+                            </Dg4Field>
+                            <Typography variant="h4">DG4</Typography>
+                            <Dg4Field>
+                                <Input disabled defaultValue={caseItem?.DG4Date?.toLocaleDateString("en-CA")} type="date" />
+                            </Dg4Field>
+                        </Wrapper>
+                        <Wrapper>
+                            <NumberInput
+                                setHasChanges={setHasChanges}
+                                setValue={setProducerCount}
+                                value={producerCount ?? 0}
+                                integer
+                                disabled
+                                label="Producer count"
+                            />
+                            <NumberInput
+                                setHasChanges={setHasChanges}
+                                setValue={setGasInjectorCount}
+                                value={gasInjectorCount ?? 0}
+                                integer
+                                disabled
+                                label="Gas injector count"
+                            />
+                            <NumberInput
+                                setHasChanges={setHasChanges}
+                                setValue={setWaterInjectorCount}
+                                value={waterInjectorCount ?? 0}
+                                integer
+                                disabled
+                                label="Water injector count"
+                            />
+                        </Wrapper>
+                        <Wrapper>
+                            <NumberInput
+                                setHasChanges={setHasChanges}
+                                setValue={setRiserCount}
+                                value={riserCount ?? 0}
+                                integer
+                                label="Riser count"
+                            />
+                            <NumberInput
+                                setHasChanges={setHasChanges}
+                                setValue={setTemplateCount}
+                                value={templateCount ?? 0}
+                                integer
+                                label="Template count"
+                            />
+                            <NumberInput
+                                setHasChanges={setHasChanges}
+                                setValue={setInfieldPipelineSystemLength}
+                                value={infieldPipelineSystemLength ?? 0}
+                                integer
+                                label={`Length of production lines ${project?.physUnit === 0 ? "(km)" : "(Oilfield)"}`}
+                            />
+                            <NumberInput
+                                setHasChanges={setHasChanges}
+                                setValue={setUmbilicalSystemLength}
+                                value={umbilicalSystemLength ?? 0}
+                                integer
+                                label={`Length of umbilical system ${project?.physUnit === 0 ? "(km)" : "(Oilfield)"}`}
+                            />
+                        </Wrapper>
+                        <Maturity
+                            setMaturity={setMaturity}
+                            currentValue={maturity}
+                            setHasChanges={setHasChanges}
+                        />
+                        <ProductionFlowline
+                            setHasChanges={setHasChanges}
+                            currentValue={productionFlowline}
+                            setProductionFlowline={setProductionFlowline}
+                        />
+                        <TimeSeries
+                            dG4Year={caseItem?.DG4Date?.getFullYear()}
+                            setTimeSeries={setCostProfile}
+                            setHasChanges={setHasChanges}
+                            timeSeries={costProfile}
+                            timeSeriesTitle={`Cost profile ${currency === 0 ? "(MUSD)" : "(MNOK)"}`}
+                            firstYear={firstTSYear!}
+                            lastYear={lastTSYear!}
+                            setFirstYear={setFirstTSYear!}
+                            setLastYear={setLastTSYear}
+                        />
+                        <TimeSeries
+                            dG4Year={caseItem?.DG4Date?.getFullYear()}
+                            setTimeSeries={setCessationCostProfile}
+                            setHasChanges={setHasChanges}
+                            timeSeries={cessationCostProfile}
+                            timeSeriesTitle={`Cessation cost profile ${currency === 0 ? "(MUSD)" : "(MNOK)"}`}
+                            firstYear={firstTSYear!}
+                            lastYear={lastTSYear!}
+                            setFirstYear={setFirstTSYear!}
+                            setLastYear={setLastTSYear}
+                        />
+                    </AssetViewDiv>
                 </MainView>
-                </Body>
-            </ProjectWrapper>
+            </Body>
+        </ProjectWrapper>
     )
 }
 

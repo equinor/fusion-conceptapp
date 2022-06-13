@@ -5,6 +5,7 @@ import { useEffect, useState } from "react"
 import {
     useParams,
 } from "react-router"
+import styled from "styled-components"
 import Save from "../Components/Save"
 import AssetName from "../Components/AssetName"
 import TimeSeries from "../Components/TimeSeries"
@@ -24,7 +25,7 @@ import { DrillingSchedule } from "../models/assets/wellproject/DrillingSchedule"
 import { WellProjectCostProfile } from "../models/assets/wellproject/WellProjectCostProfile"
 import AssetCurrency from "../Components/AssetCurrency"
 import SideMenu from "../Components/SideMenu/SideMenu"
-import styled from "styled-components"
+import { IAssetService } from "../Services/IAssetService"
 
 const ProjectWrapper = styled.div`
     display: flex;
@@ -60,13 +61,16 @@ function WellProjectView() {
     const [costProfile, setCostProfile] = useState<WellProjectCostProfile>()
     const [drillingSchedule, setDrillingSchedule] = useState<DrillingSchedule>()
     const [currency, setCurrency] = useState<Components.Schemas.Currency>(0)
+    const [wellProjectService, setWellProjectService] = useState<IAssetService>()
 
     useEffect(() => {
         (async () => {
             try {
                 const projectId: string = unwrapProjectId(fusionProjectId)
-                const projectResult: Project = await GetProjectService().getProjectByID(projectId)
+                const projectResult: Project = await (await GetProjectService()).getProjectByID(projectId)
                 setProject(projectResult)
+                const service = await GetWellProjectService()
+                setWellProjectService(service)
             } catch (error) {
                 console.error(`[CaseView] Error while fetching project ${fusionProjectId}`, error)
             }
@@ -131,102 +135,110 @@ function WellProjectView() {
 
     return (
         <ProjectWrapper>
-        <Body>
-            <SideMenu />
-            <MainView>
-        <AssetViewDiv>
-            <Wrapper>
-                <Typography variant="h2">WellProject</Typography>
-                <Save
-                    name={wellProjectName}
-                    setHasChanges={setHasChanges}
-                    hasChanges={hasChanges}
-                    setAsset={setWellProject}
-                    setProject={setProject}
-                    asset={wellProject!}
-                    assetService={GetWellProjectService()}
-                    assetType={AssetTypeEnum.wellProjects}
-                />
-            </Wrapper>
-            <AssetName
-                setName={setWellProjectName}
-                name={wellProjectName}
-                setHasChanges={setHasChanges}
-            />
-            <Wrapper>
-                <Typography variant="h4">DG3</Typography>
-                <Dg4Field>
-                    <Input disabled defaultValue={caseItem?.DG3Date?.toLocaleDateString("en-CA")} type="date" />
-                </Dg4Field>
-                <Typography variant="h4">DG4</Typography>
-                <Dg4Field>
-                    <Input disabled defaultValue={caseItem?.DG4Date?.toLocaleDateString("en-CA")} type="date" />
-                </Dg4Field>
-            </Wrapper>
-            <AssetCurrency
-                setCurrency={setCurrency}
-                setHasChanges={setHasChanges}
-                currentValue={currency}
-            />
-            <Wrapper>
-                <WrapperColumn>
-                    <Label htmlFor="name" label="Artificial lift" />
-                    <Input
-                        id="artificialLift"
-                        disabled
-                        defaultValue={GetArtificialLiftName(wellProject?.artificialLift)}
-                    />
-                </WrapperColumn>
-            </Wrapper>
-            <Wrapper>
-                <NumberInput
-                    setValue={setRigMobDemob}
-                    value={rigMobDemob ?? 0}
-                    setHasChanges={setHasChanges}
-                    integer={false}
-                    label="Rig mob demob"
-                />
-                <NumberInput
-                    setValue={setAnnualWellInterventionCost}
-                    value={annualWellInterventionCost ?? 0}
-                    setHasChanges={setHasChanges}
-                    integer={false}
-                    label="Annual well intervention cost"
-                />
-                <NumberInput
-                    setValue={setPluggingAndAbandonment}
-                    value={pluggingAndAbandonment ?? 0}
-                    setHasChanges={setHasChanges}
-                    integer={false}
-                    label="Plugging and abandonment"
-                />
-            </Wrapper>
-            <TimeSeries
-                dG4Year={caseItem?.DG4Date?.getFullYear()}
-                setTimeSeries={setCostProfile}
-                setHasChanges={setHasChanges}
-                timeSeries={costProfile}
-                timeSeriesTitle={`Cost profile ${currency === 0 ? "(MUSD)" : "(MNOK)"}`}
-                firstYear={firstTSYear!}
-                lastYear={lastTSYear!}
-                setFirstYear={setFirstTSYear!}
-                setLastYear={setLastTSYear}
-            />
-            <TimeSeries
-                dG4Year={caseItem?.DG4Date?.getFullYear()}
-                setTimeSeries={setDrillingSchedule}
-                setHasChanges={setHasChanges}
-                timeSeries={drillingSchedule}
-                timeSeriesTitle="Drilling schedule"
-                firstYear={firstTSYear!}
-                lastYear={lastTSYear!}
-                setFirstYear={setFirstTSYear!}
-                setLastYear={setLastTSYear}
-            />
-        </AssetViewDiv>
+            <Body>
+                <SideMenu />
+                <MainView>
+                    <AssetViewDiv>
+                        <Wrapper>
+                            <Typography variant="h2">WellProject</Typography>
+                            <Save
+                                name={wellProjectName}
+                                setHasChanges={setHasChanges}
+                                hasChanges={hasChanges}
+                                setAsset={setWellProject}
+                                setProject={setProject}
+                                asset={wellProject!}
+                                assetService={wellProjectService!}
+                                assetType={AssetTypeEnum.wellProjects}
+                            />
+                        </Wrapper>
+                        <AssetName
+                            setName={setWellProjectName}
+                            name={wellProjectName}
+                            setHasChanges={setHasChanges}
+                        />
+                        <Wrapper>
+                            <Typography variant="h4">DG3</Typography>
+                            <Dg4Field>
+                                <Input
+                                    disabled
+                                    defaultValue={caseItem?.DG3Date?.toLocaleDateString("en-CA")}
+                                    type="date"
+                                />
+                            </Dg4Field>
+                            <Typography variant="h4">DG4</Typography>
+                            <Dg4Field>
+                                <Input
+                                    disabled
+                                    defaultValue={caseItem?.DG4Date?.toLocaleDateString("en-CA")}
+                                    type="date"
+                                />
+                            </Dg4Field>
+                        </Wrapper>
+                        <AssetCurrency
+                            setCurrency={setCurrency}
+                            setHasChanges={setHasChanges}
+                            currentValue={currency}
+                        />
+                        <Wrapper>
+                            <WrapperColumn>
+                                <Label htmlFor="name" label="Artificial lift" />
+                                <Input
+                                    id="artificialLift"
+                                    disabled
+                                    defaultValue={GetArtificialLiftName(wellProject?.artificialLift)}
+                                />
+                            </WrapperColumn>
+                        </Wrapper>
+                        <Wrapper>
+                            <NumberInput
+                                setValue={setRigMobDemob}
+                                value={rigMobDemob ?? 0}
+                                setHasChanges={setHasChanges}
+                                integer={false}
+                                label="Rig mob demob"
+                            />
+                            <NumberInput
+                                setValue={setAnnualWellInterventionCost}
+                                value={annualWellInterventionCost ?? 0}
+                                setHasChanges={setHasChanges}
+                                integer={false}
+                                label="Annual well intervention cost"
+                            />
+                            <NumberInput
+                                setValue={setPluggingAndAbandonment}
+                                value={pluggingAndAbandonment ?? 0}
+                                setHasChanges={setHasChanges}
+                                integer={false}
+                                label="Plugging and abandonment"
+                            />
+                        </Wrapper>
+                        <TimeSeries
+                            dG4Year={caseItem?.DG4Date?.getFullYear()}
+                            setTimeSeries={setCostProfile}
+                            setHasChanges={setHasChanges}
+                            timeSeries={costProfile}
+                            timeSeriesTitle={`Cost profile ${currency === 0 ? "(MUSD)" : "(MNOK)"}`}
+                            firstYear={firstTSYear!}
+                            lastYear={lastTSYear!}
+                            setFirstYear={setFirstTSYear!}
+                            setLastYear={setLastTSYear}
+                        />
+                        <TimeSeries
+                            dG4Year={caseItem?.DG4Date?.getFullYear()}
+                            setTimeSeries={setDrillingSchedule}
+                            setHasChanges={setHasChanges}
+                            timeSeries={drillingSchedule}
+                            timeSeriesTitle="Drilling schedule"
+                            firstYear={firstTSYear!}
+                            lastYear={lastTSYear!}
+                            setFirstYear={setFirstTSYear!}
+                            setLastYear={setLastTSYear}
+                        />
+                    </AssetViewDiv>
                 </MainView>
-                </Body>
-            </ProjectWrapper>
+            </Body>
+        </ProjectWrapper>
     )
 }
 

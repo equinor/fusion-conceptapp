@@ -29,50 +29,53 @@ const MainView = styled.div`
     overflow: scroll;
 `
 
-export const AuthenticatedViewContainer: VoidFunctionComponent = () => {
+interface AuthHandlerProps {
+    children: JSX.Element;
+}
+
+export const AuthenticatedViewContainer: React.FC<AuthHandlerProps> = () => {
     const { instance, accounts } = useMsal()
     const [haveLoginToken, setHaveLoginToken] = useState<boolean>(false)
     const [haveFusionToken, setHaveFusionToken] = useState<boolean>(false)
 
-    // useEffect(() => {
-    //     if (instance && accounts) {
-    //         (async () => {
-    //             // Silently acquires an access token
-    //             try {
-    //                 const { accessToken } = await instance.acquireTokenSilent({
-    //                     ...loginRequest,
-    //                     account: accounts[0],
-    //                 })
-    //                 StoreToken(LoginAccessTokenKey, accessToken)
-    //                 setHaveLoginToken(true)
-    //             } catch (error) {
-    //                 console.error("[AuthenticatedViewContainer] Login failed", error)
-    //             }
+    useEffect(() => {
+        if (instance && accounts) {
+            (async () => {
+                // Silently acquires an access token
+                try {
+                    const { accessToken } = await instance.acquireTokenSilent({
+                        ...loginRequest,
+                        account: accounts[0],
+                    })
+                    StoreToken(LoginAccessTokenKey, accessToken)
+                    setHaveLoginToken(true)
+                } catch (error) {
+                    console.error("[AuthenticatedViewContainer] Login failed", error)
+                }
 
-    //             try {
-    //                 const { accessToken } = await instance.acquireTokenSilent({
-    //                     scopes: fusionApiScope,
-    //                     account: accounts[0],
-    //                 })
-    //                 StoreToken(FusionAccessTokenKey, accessToken)
-    //                 setHaveFusionToken(true)
-    //             } catch (error) {
-    //                 console.error("[AuthenticatedViewContainer] Failed to get fusion token", error)
-    //             }
-    //         })()
-    //     }
-    // }, [instance, accounts])
+                try {
+                    const { accessToken } = await instance.acquireTokenSilent({
+                        scopes: fusionApiScope,
+                        account: accounts[0],
+                    })
+                    StoreToken(FusionAccessTokenKey, accessToken)
+                    setHaveFusionToken(true)
+                } catch (error) {
+                    console.error("[AuthenticatedViewContainer] Failed to get fusion token", error)
+                }
+            })()
+        }
+    }, [instance, accounts])
 
-    // if (!haveLoginToken || !haveFusionToken) {
-    //     return (<p>waiting on token...</p>)
-    // }
+    if (!haveLoginToken || !haveFusionToken) {
+        return (<p>waiting on token...</p>)
+    }
 
     return (
         <Wrapper>
             <Body>
                 <SideMenu />
-                <MainView>
-                </MainView>
+                <MainView />
             </Body>
         </Wrapper>
     )

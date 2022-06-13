@@ -21,7 +21,8 @@ export function StoreToken(keyName: string, token: string) {
 }
 
 export function GetToken(keyName: string) {
-    return window.sessionStorage.getItem(keyName)
+    const scopes = ["api://9b125a0c-4907-43b9-8db2-ff405d6b0524/.default"]
+    return window.Fusion.modules.auth.acquireAccessToken({ scopes })
 }
 
 export const unwrapCase = (_case?: Case | undefined): Case => {

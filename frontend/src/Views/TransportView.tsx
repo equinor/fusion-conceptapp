@@ -5,6 +5,7 @@ import { useEffect, useState } from "react"
 import {
     useParams,
 } from "react-router"
+import styled from "styled-components"
 import Save from "../Components/Save"
 import AssetName from "../Components/AssetName"
 import TimeSeries from "../Components/TimeSeries"
@@ -25,7 +26,7 @@ import { TransportCostProfile } from "../models/assets/transport/TransportCostPr
 import { TransportCessationCostProfile } from "../models/assets/transport/TransportCessationCostProfile"
 import AssetCurrency from "../Components/AssetCurrency"
 import SideMenu from "../Components/SideMenu/SideMenu"
-import styled from "styled-components"
+import { IAssetService } from "../Services/IAssetService"
 
 const ProjectWrapper = styled.div`
     display: flex;
@@ -61,13 +62,16 @@ const TransportView = () => {
     const [costProfile, setCostProfile] = useState<TransportCostProfile>()
     const [cessationCostProfile, setCessationCostProfile] = useState<TransportCessationCostProfile>()
     const [currency, setCurrency] = useState<Components.Schemas.Currency>(0)
+    const [transportService, setTransportService] = useState<IAssetService>()
 
     useEffect(() => {
         (async () => {
             try {
                 const projectId: string = unwrapProjectId(fusionProjectId)
-                const projectResult: Project = await GetProjectService().getProjectByID(projectId)
+                const projectResult: Project = await (await GetProjectService()).getProjectByID(projectId)
                 setProject(projectResult)
+                const service = await GetTransportService()
+                setTransportService(service)
             } catch (error) {
                 console.error(`[CaseView] Error while fetching project ${fusionProjectId}`, error)
             }
@@ -132,90 +136,98 @@ const TransportView = () => {
 
     return (
         <ProjectWrapper>
-        <Body>
-            <SideMenu />
-            <MainView>
-        <AssetViewDiv>
-            <Wrapper>
-                <Typography variant="h2">Transport</Typography>
-                <Save
-                    name={transportName}
-                    setHasChanges={setHasChanges}
-                    hasChanges={hasChanges}
-                    setAsset={setTransport}
-                    setProject={setProject}
-                    asset={transport!}
-                    assetService={GetTransportService()}
-                    assetType={AssetTypeEnum.transports}
-                />
-            </Wrapper>
-            <AssetName
-                setName={setTransportName}
-                name={transportName}
-                setHasChanges={setHasChanges}
-            />
-            <Wrapper>
-                <Typography variant="h4">DG3</Typography>
-                <Dg4Field>
-                    <Input disabled defaultValue={caseItem?.DG3Date?.toLocaleDateString("en-CA")} type="date" />
-                </Dg4Field>
-                <Typography variant="h4">DG4</Typography>
-                <Dg4Field>
-                    <Input disabled defaultValue={caseItem?.DG4Date?.toLocaleDateString("en-CA")} type="date" />
-                </Dg4Field>
-            </Wrapper>
-            <AssetCurrency
-                setCurrency={setCurrency}
-                setHasChanges={setHasChanges}
-                currentValue={currency}
-            />
-            <Wrapper>
-                <NumberInput
-                    setHasChanges={setHasChanges}
-                    setValue={setGasExportPipelineLength}
-                    value={gasExportPipelineLength ?? 0}
-                    integer
-                    label="Length of gas export pipeline"
-                />
-                <NumberInput
-                    setHasChanges={setHasChanges}
-                    setValue={setOilExportPipelineLength}
-                    value={oilExportPipelineLength ?? 0}
-                    integer
-                    label="Length of oil export pipeline"
-                />
-            </Wrapper>
-            <Maturity
-                setMaturity={setMaturity}
-                currentValue={maturity}
-                setHasChanges={setHasChanges}
-            />
-            <TimeSeries
-                dG4Year={caseItem?.DG4Date?.getFullYear()}
-                setTimeSeries={setCostProfile}
-                setHasChanges={setHasChanges}
-                timeSeries={costProfile}
-                timeSeriesTitle={`Cost profile ${currency === 0 ? "(MUSD)" : "(MNOK)"}`}
-                firstYear={firstTSYear!}
-                lastYear={lastTSYear!}
-                setFirstYear={setFirstTSYear!}
-                setLastYear={setLastTSYear}
-            />
-            <TimeSeries
-                dG4Year={caseItem?.DG4Date?.getFullYear()}
-                setTimeSeries={setCessationCostProfile}
-                setHasChanges={setHasChanges}
-                timeSeries={cessationCostProfile}
-                timeSeriesTitle={`Cessation cost profile ${currency === 0 ? "(MUSD)" : "(MNOK)"}`}
-                firstYear={firstTSYear!}
-                lastYear={lastTSYear!}
-                setFirstYear={setFirstTSYear!}
-                setLastYear={setLastTSYear}
-            />
-        </AssetViewDiv>
+            <Body>
+                <SideMenu />
+                <MainView>
+                    <AssetViewDiv>
+                        <Wrapper>
+                            <Typography variant="h2">Transport</Typography>
+                            <Save
+                                name={transportName}
+                                setHasChanges={setHasChanges}
+                                hasChanges={hasChanges}
+                                setAsset={setTransport}
+                                setProject={setProject}
+                                asset={transport!}
+                                assetService={transportService!}
+                                assetType={AssetTypeEnum.transports}
+                            />
+                        </Wrapper>
+                        <AssetName
+                            setName={setTransportName}
+                            name={transportName}
+                            setHasChanges={setHasChanges}
+                        />
+                        <Wrapper>
+                            <Typography variant="h4">DG3</Typography>
+                            <Dg4Field>
+                                <Input
+                                    disabled
+                                    defaultValue={caseItem?.DG3Date?.toLocaleDateString("en-CA")}
+                                    type="date"
+                                />
+                            </Dg4Field>
+                            <Typography variant="h4">DG4</Typography>
+                            <Dg4Field>
+                                <Input
+                                    disabled
+                                    defaultValue={caseItem?.DG4Date?.toLocaleDateString("en-CA")}
+                                    type="date"
+                                />
+                            </Dg4Field>
+                        </Wrapper>
+                        <AssetCurrency
+                            setCurrency={setCurrency}
+                            setHasChanges={setHasChanges}
+                            currentValue={currency}
+                        />
+                        <Wrapper>
+                            <NumberInput
+                                setHasChanges={setHasChanges}
+                                setValue={setGasExportPipelineLength}
+                                value={gasExportPipelineLength ?? 0}
+                                integer
+                                label="Length of gas export pipeline"
+                            />
+                            <NumberInput
+                                setHasChanges={setHasChanges}
+                                setValue={setOilExportPipelineLength}
+                                value={oilExportPipelineLength ?? 0}
+                                integer
+                                label="Length of oil export pipeline"
+                            />
+                        </Wrapper>
+                        <Maturity
+                            setMaturity={setMaturity}
+                            currentValue={maturity}
+                            setHasChanges={setHasChanges}
+                        />
+                        <TimeSeries
+                            dG4Year={caseItem?.DG4Date?.getFullYear()}
+                            setTimeSeries={setCostProfile}
+                            setHasChanges={setHasChanges}
+                            timeSeries={costProfile}
+                            timeSeriesTitle={`Cost profile ${currency === 0 ? "(MUSD)" : "(MNOK)"}`}
+                            firstYear={firstTSYear!}
+                            lastYear={lastTSYear!}
+                            setFirstYear={setFirstTSYear!}
+                            setLastYear={setLastTSYear}
+                        />
+                        <TimeSeries
+                            dG4Year={caseItem?.DG4Date?.getFullYear()}
+                            setTimeSeries={setCessationCostProfile}
+                            setHasChanges={setHasChanges}
+                            timeSeries={cessationCostProfile}
+                            timeSeriesTitle={`Cessation cost profile ${currency === 0 ? "(MUSD)" : "(MNOK)"}`}
+                            firstYear={firstTSYear!}
+                            lastYear={lastTSYear!}
+                            setFirstYear={setFirstTSYear!}
+                            setLastYear={setLastTSYear}
+                        />
+                    </AssetViewDiv>
                 </MainView>
-                </Body>
-            </ProjectWrapper>
+            </Body>
+        </ProjectWrapper>
     )
 }
 

@@ -76,7 +76,7 @@ const CaseDescription = ({
         const unwrappedCase: Case = unwrapCase(caseItem)
         const caseDto = Case.Copy(unwrappedCase)
         caseDto.description = caseDescription
-        const newProject: Project = await GetCaseService().updateCase(caseDto)
+        const newProject: Project = await (await GetCaseService()).updateCase(caseDto)
         setProject(newProject)
         const caseResult: Case = unwrapCase(newProject.cases.find((o) => o.id === _caseId))
         setCase(caseResult)
