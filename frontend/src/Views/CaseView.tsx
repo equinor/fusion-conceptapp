@@ -75,7 +75,7 @@ function CaseView() {
         (async () => {
             try {
                 const projectId: string = unwrapProjectId(fusionProjectId)
-                const projectResult: Project = await GetProjectService().getProjectByID(projectId)
+                const projectResult: Project = await (await GetProjectService()).getProjectByID(projectId)
                 setProject(projectResult)
                 const caseResult = projectResult.cases.find((o) => o.id === caseId)
                 setCase(caseResult)
@@ -112,7 +112,7 @@ function CaseView() {
                 caseDto.facilitiesAvailability = facilitiesAvailability
                 caseDto.referenceCase = isReferenceCase ?? false
 
-                const newProject = await GetCaseService().updateCase(caseDto)
+                const newProject = await (await GetCaseService()).updateCase(caseDto)
                 setCase(newProject.cases.find((o) => o.id === caseItem.id))
             }
         })()
@@ -132,116 +132,121 @@ function CaseView() {
 
     return (
         <ProjectWrapper>
-        <Body>
-            <SideMenu />
-            <MainView>
-        <CaseViewDiv>
-            <CaseName
-                caseItem={caseItem}
-                setProject={setProject}
-                setCase={setCase}
-            />
-            {/* <ExcelUpload /> */}
-            <Tabs activeTab={activeTab} onChange={handleTabChange}>
-                <CaseDescription
-                    caseItem={caseItem}
-                    setProject={setProject}
-                    setCase={setCase}
-                />
-                <Switch onClick={switchReferance} label="Reference case" readOnly checked={isReferenceCase ?? false} />
-                <Wrapper>
-                    <CaseDGDate
-                        caseItem={caseItem}
-                        setProject={setProject}
-                        setCase={setCase}
-                        dGType={DGEnum.DG0}
-                        dGName="DG0"
-                    />
-                </Wrapper>
-                <Wrapper>
-                    <CaseDGDate
-                        caseItem={caseItem}
-                        setProject={setProject}
-                        setCase={setCase}
-                        dGType={DGEnum.DG1}
-                        dGName="DG1"
-                    />
-                    <CaseDGDate
-                        caseItem={caseItem}
-                        setProject={setProject}
-                        setCase={setCase}
-                        dGType={DGEnum.DG3}
-                        dGName="DG3"
-                    />
-                </Wrapper>
-                <Wrapper>
-                    <CaseDGDate
-                        caseItem={caseItem}
-                        setProject={setProject}
-                        setCase={setCase}
-                        dGType={DGEnum.DG2}
-                        dGName="DG2"
-                    />
-                    <CaseDGDate
-                        caseItem={caseItem}
-                        setProject={setProject}
-                        setCase={setCase}
-                        dGType={DGEnum.DG4}
-                        dGName="DG4"
-                    />
-                </Wrapper>
-                <CaseArtificialLift
-                    currentValue={artificialLift}
-                    setArtificialLift={setArtificialLift}
-                    setProject={setProject}
-                    caseItem={caseItem}
-                />
-                <ProductionStrategyOverview
-                    currentValue={prodStratOverview}
-                    setProductionStrategyOverview={setProdStratOverview}
-                    setProject={setProject}
-                    caseItem={caseItem}
-                />
-                <Wrapper>
-                    <NumberInput
-                        setValue={setProducerCount}
-                        value={producerCount ?? 0}
-                        integer
-                        disabled={false}
-                        label="Producer count"
-                    />
-                    <NumberInput
-                        setValue={setGasInjectorCount}
-                        value={gasInjectorCount ?? 0}
-                        integer
-                        disabled={false}
-                        label="Gas injector count"
-                    />
-                    <NumberInput
-                        setValue={setWaterInjectorCount}
-                        value={waterInjectorCount ?? 0}
-                        integer
-                        disabled={false}
-                        label="Water injector count"
-                    />
-                    <NumberInput
-                        setValue={setFacilitiesAvailability}
-                        value={facilitiesAvailability ?? 0}
-                        integer
-                        disabled={false}
-                        label={`Facilities availability ${project?.physUnit === 0 ? "(%)" : "(Oilfield)"}`}
-                    />
-                </Wrapper>
-                <CaseAsset
-                    caseItem={caseItem}
-                    project={project}
-                    setProject={setProject}
-                    setCase={setCase}
-                    caseId={caseId}
-                />
-            </Tabs>
-        </CaseViewDiv>
-        </MainView>
+            <Body>
+                <SideMenu />
+                <MainView>
+                    <CaseViewDiv>
+                        <CaseName
+                            caseItem={caseItem}
+                            setProject={setProject}
+                            setCase={setCase}
+                        />
+                        {/* <ExcelUpload /> */}
+                        <Tabs activeTab={activeTab} onChange={handleTabChange}>
+                            <CaseDescription
+                                caseItem={caseItem}
+                                setProject={setProject}
+                                setCase={setCase}
+                            />
+                            <Switch
+                                onClick={switchReferance}
+                                label="Reference case"
+                                readOnly
+                                checked={isReferenceCase ?? false}
+                            />
+                            <Wrapper>
+                                <CaseDGDate
+                                    caseItem={caseItem}
+                                    setProject={setProject}
+                                    setCase={setCase}
+                                    dGType={DGEnum.DG0}
+                                    dGName="DG0"
+                                />
+                            </Wrapper>
+                            <Wrapper>
+                                <CaseDGDate
+                                    caseItem={caseItem}
+                                    setProject={setProject}
+                                    setCase={setCase}
+                                    dGType={DGEnum.DG1}
+                                    dGName="DG1"
+                                />
+                                <CaseDGDate
+                                    caseItem={caseItem}
+                                    setProject={setProject}
+                                    setCase={setCase}
+                                    dGType={DGEnum.DG3}
+                                    dGName="DG3"
+                                />
+                            </Wrapper>
+                            <Wrapper>
+                                <CaseDGDate
+                                    caseItem={caseItem}
+                                    setProject={setProject}
+                                    setCase={setCase}
+                                    dGType={DGEnum.DG2}
+                                    dGName="DG2"
+                                />
+                                <CaseDGDate
+                                    caseItem={caseItem}
+                                    setProject={setProject}
+                                    setCase={setCase}
+                                    dGType={DGEnum.DG4}
+                                    dGName="DG4"
+                                />
+                            </Wrapper>
+                            <CaseArtificialLift
+                                currentValue={artificialLift}
+                                setArtificialLift={setArtificialLift}
+                                setProject={setProject}
+                                caseItem={caseItem}
+                            />
+                            <ProductionStrategyOverview
+                                currentValue={prodStratOverview}
+                                setProductionStrategyOverview={setProdStratOverview}
+                                setProject={setProject}
+                                caseItem={caseItem}
+                            />
+                            <Wrapper>
+                                <NumberInput
+                                    setValue={setProducerCount}
+                                    value={producerCount ?? 0}
+                                    integer
+                                    disabled={false}
+                                    label="Producer count"
+                                />
+                                <NumberInput
+                                    setValue={setGasInjectorCount}
+                                    value={gasInjectorCount ?? 0}
+                                    integer
+                                    disabled={false}
+                                    label="Gas injector count"
+                                />
+                                <NumberInput
+                                    setValue={setWaterInjectorCount}
+                                    value={waterInjectorCount ?? 0}
+                                    integer
+                                    disabled={false}
+                                    label="Water injector count"
+                                />
+                                <NumberInput
+                                    setValue={setFacilitiesAvailability}
+                                    value={facilitiesAvailability ?? 0}
+                                    integer
+                                    disabled={false}
+                                    label={`Facilities availability ${project?.physUnit === 0 ? "(%)" : "(Oilfield)"}`}
+                                />
+                            </Wrapper>
+                            <CaseAsset
+                                caseItem={caseItem}
+                                project={project}
+                                setProject={setProject}
+                                setCase={setCase}
+                                caseId={caseId}
+                            />
+                        </Tabs>
+                    </CaseViewDiv>
+                </MainView>
             </Body>
         </ProjectWrapper>
     )

@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import {
     Input, Label, Typography,
 } from "@equinor/eds-core-react"
@@ -5,6 +6,7 @@ import { useEffect, useState } from "react"
 import {
     useParams,
 } from "react-router"
+import styled from "styled-components"
 import { DrainageStrategy } from "../models/assets/drainagestrategy/DrainageStrategy"
 import { Project } from "../models/Project"
 import { Case } from "../models/Case"
@@ -30,8 +32,7 @@ import { ProductionProfileWater } from "../models/assets/drainagestrategy/Produc
 import { ProductionProfileWaterInjection } from "../models/assets/drainagestrategy/ProductionProfileWaterInjection"
 import { ProductionProfileNGL } from "../models/assets/drainagestrategy/ProductionProfileNGL"
 import SideMenu from "../Components/SideMenu/SideMenu"
-import styled from "styled-components"
-
+import { IAssetService } from "../Services/IAssetService"
 
 const ProjectWrapper = styled.div`
     display: flex;
@@ -73,12 +74,16 @@ const DrainageStrategyView = () => {
     const [hasChanges, setHasChanges] = useState(false)
     const { fusionProjectId, caseId, drainageStrategyId } = useParams<Record<string, string | undefined>>()
 
+    const [drainageStrategyService, setDrainageStrategyService] = useState<IAssetService>()
+
     useEffect(() => {
         (async () => {
             try {
                 const projectId: string = unwrapProjectId(fusionProjectId)
-                const projectResult: Project = await GetProjectService().getProjectByID(projectId)
+                const projectResult: Project = await (await GetProjectService()).getProjectByID(projectId)
                 setProject(projectResult)
+                const service = await GetDrainageStrategyService()
+                setDrainageStrategyService(service)
             } catch (error) {
                 console.error(`[CaseView] Error while fetching project ${fusionProjectId}`, error)
             }
@@ -160,171 +165,175 @@ const DrainageStrategyView = () => {
 
     return (
         <ProjectWrapper>
-        <Body>
-            <SideMenu />
-            <MainView>
-        <AssetViewDiv>
-            <Wrapper>
-                <Typography variant="h2">Drainage strategy</Typography>
-                <Save
-                    name={drainageStrategyName}
-                    setHasChanges={setHasChanges}
-                    hasChanges={hasChanges}
-                    setAsset={setDrainageStrategy}
-                    setProject={setProject}
-                    asset={drainageStrategy!}
-                    assetService={GetDrainageStrategyService()}
-                    assetType={AssetTypeEnum.drainageStrategies}
-                />
-            </Wrapper>
-            <AssetName
-                setName={setDrainageStrategyName}
-                name={drainageStrategyName}
-                setHasChanges={setHasChanges}
-            />
-            <Wrapper>
-                <Typography variant="h4">DG4</Typography>
-                <Dg4Field>
-                    <Input disabled defaultValue={caseItem?.DG4Date?.toLocaleDateString("en-CA")} type="date" />
-                </Dg4Field>
-            </Wrapper>
-            <Wrapper>
-                <WrapperColumn>
-                    <Label htmlFor="name" label="Artificial lift" />
-                    <Input
-                        id="artificialLift"
-                        disabled
-                        defaultValue={GetArtificialLiftName(drainageStrategy?.artificialLift)}
-                    />
-                </WrapperColumn>
-            </Wrapper>
-            <Wrapper>
-                <NumberInput
-                    setValue={setNGLYield}
-                    value={nGLYield ?? 0}
-                    setHasChanges={setHasChanges}
-                    integer={false}
-                    label={`NGL yield ${project?.physUnit === 0 ? "(tonnes/MSm³)" : "(Oilfield)"}`}
-                />
-                <NumberInput
-                    value={drainageStrategy?.producerCount ?? 0}
-                    integer
-                    disabled
-                    label="Producer count"
-                />
-                <NumberInput
-                    value={drainageStrategy?.gasInjectorCount ?? 0}
-                    integer
-                    disabled
-                    label="Gas injector count"
-                />
-                <NumberInput
-                    value={drainageStrategy?.waterInjectorCount ?? 0}
-                    integer
-                    disabled
-                    label="Water injector count"
-                />
-                <NumberInput
-                    value={caseItem?.facilitiesAvailability ?? 0}
-                    integer={false}
-                    disabled
-                    label={`Facilities availability ${project?.physUnit === 0 ? "(%)" : "(Oilfield)"}`}
-                />
-            </Wrapper>
-            <TimeSeries
-                dG4Year={caseItem?.DG4Date?.getFullYear()}
-                setTimeSeries={setCo2Emissions}
-                setHasChanges={setHasChanges}
-                timeSeries={co2Emissions}
-                timeSeriesTitle={`CO2 emissions ${project?.physUnit === 0 ? "(million tonnes)" : "(Oilfield)"}`}
-                firstYear={firstTSYear}
-                lastYear={lastTSYear}
-                setFirstYear={setFirstTSYear}
-                setLastYear={setLastTSYear}
-            />
-            <TimeSeries
-                dG4Year={caseItem?.DG4Date?.getFullYear()}
-                setTimeSeries={setNetSalesGas}
-                setHasChanges={setHasChanges}
-                timeSeries={netSalesGas}
-                timeSeriesTitle={`Net sales gas ${project?.physUnit === 0 ? "(GSm³)" : "(Oilfield)"}`}
-                firstYear={firstTSYear}
-                lastYear={lastTSYear}
-                setFirstYear={setFirstTSYear}
-                setLastYear={setLastTSYear}
-            />
-            <TimeSeries
-                dG4Year={caseItem?.DG4Date?.getFullYear()}
-                setTimeSeries={setFuelFlaringAndLosses}
-                setHasChanges={setHasChanges}
-                timeSeries={fuelFlaringAndLosses}
-                timeSeriesTitle={`Fuel flaring and losses ${project?.physUnit === 0 ? "(GSm³)" : "(Oilfield)"}`}
-                firstYear={firstTSYear}
-                lastYear={lastTSYear}
-                setFirstYear={setFirstTSYear}
-                setLastYear={setLastTSYear}
-            />
-            <TimeSeries
-                dG4Year={caseItem?.DG4Date?.getFullYear()}
-                setTimeSeries={setProductionProfileGas}
-                setHasChanges={setHasChanges}
-                timeSeries={productionProfileGas}
-                timeSeriesTitle={`Production profile gas ${project?.physUnit === 0 ? "(GSm³)" : "(Oilfield)"}`}
-                firstYear={firstTSYear}
-                lastYear={lastTSYear}
-                setFirstYear={setFirstTSYear}
-                setLastYear={setLastTSYear}
-            />
-            <TimeSeries
-                dG4Year={caseItem?.DG4Date?.getFullYear()}
-                setTimeSeries={setProductionProfileOil}
-                setHasChanges={setHasChanges}
-                timeSeries={productionProfileOil}
-                timeSeriesTitle={`Production profile oil ${project?.physUnit === 0 ? "(MSm³)" : "(Oilfield)"}`}
-                firstYear={firstTSYear}
-                lastYear={lastTSYear}
-                setFirstYear={setFirstTSYear}
-                setLastYear={setLastTSYear}
-            />
-            <TimeSeries
-                dG4Year={caseItem?.DG4Date?.getFullYear()}
-                setTimeSeries={setProductionProfileWater}
-                setHasChanges={setHasChanges}
-                timeSeries={productionProfileWater}
-                timeSeriesTitle={`Production profile water ${project?.physUnit === 0 ? "(MSm³)" : "(Oilfield)"}`}
-                firstYear={firstTSYear}
-                lastYear={lastTSYear}
-                setFirstYear={setFirstTSYear}
-                setLastYear={setLastTSYear}
-            />
-            <TimeSeries
-                dG4Year={caseItem?.DG4Date?.getFullYear()}
-                setTimeSeries={setProductionProfileWaterInjection}
-                setHasChanges={setHasChanges}
-                timeSeries={productionProfileWaterInjection}
-                timeSeriesTitle={`Production profile water injection 
+            <Body>
+                <SideMenu />
+                <MainView>
+                    <AssetViewDiv>
+                        <Wrapper>
+                            <Typography variant="h2">Drainage strategy</Typography>
+                            <Save
+                                name={drainageStrategyName}
+                                setHasChanges={setHasChanges}
+                                hasChanges={hasChanges}
+                                setAsset={setDrainageStrategy}
+                                setProject={setProject}
+                                asset={drainageStrategy!}
+                                assetService={drainageStrategyService!}
+                                assetType={AssetTypeEnum.drainageStrategies}
+                            />
+                        </Wrapper>
+                        <AssetName
+                            setName={setDrainageStrategyName}
+                            name={drainageStrategyName}
+                            setHasChanges={setHasChanges}
+                        />
+                        <Wrapper>
+                            <Typography variant="h4">DG4</Typography>
+                            <Dg4Field>
+                                <Input
+                                    disabled
+                                    defaultValue={caseItem?.DG4Date?.toLocaleDateString("en-CA")}
+                                    type="date"
+                                />
+                            </Dg4Field>
+                        </Wrapper>
+                        <Wrapper>
+                            <WrapperColumn>
+                                <Label htmlFor="name" label="Artificial lift" />
+                                <Input
+                                    id="artificialLift"
+                                    disabled
+                                    defaultValue={GetArtificialLiftName(drainageStrategy?.artificialLift)}
+                                />
+                            </WrapperColumn>
+                        </Wrapper>
+                        <Wrapper>
+                            <NumberInput
+                                setValue={setNGLYield}
+                                value={nGLYield ?? 0}
+                                setHasChanges={setHasChanges}
+                                integer={false}
+                                label={`NGL yield ${project?.physUnit === 0 ? "(tonnes/MSm³)" : "(Oilfield)"}`}
+                            />
+                            <NumberInput
+                                value={drainageStrategy?.producerCount ?? 0}
+                                integer
+                                disabled
+                                label="Producer count"
+                            />
+                            <NumberInput
+                                value={drainageStrategy?.gasInjectorCount ?? 0}
+                                integer
+                                disabled
+                                label="Gas injector count"
+                            />
+                            <NumberInput
+                                value={drainageStrategy?.waterInjectorCount ?? 0}
+                                integer
+                                disabled
+                                label="Water injector count"
+                            />
+                            <NumberInput
+                                value={caseItem?.facilitiesAvailability ?? 0}
+                                integer={false}
+                                disabled
+                                label={`Facilities availability ${project?.physUnit === 0 ? "(%)" : "(Oilfield)"}`}
+                            />
+                        </Wrapper>
+                        <TimeSeries
+                            dG4Year={caseItem?.DG4Date?.getFullYear()}
+                            setTimeSeries={setCo2Emissions}
+                            setHasChanges={setHasChanges}
+                            timeSeries={co2Emissions}
+                            timeSeriesTitle={`CO2 emissions ${project?.physUnit === 0 ? "(million tonnes)" : "(Oilfield)"}`}
+                            firstYear={firstTSYear}
+                            lastYear={lastTSYear}
+                            setFirstYear={setFirstTSYear}
+                            setLastYear={setLastTSYear}
+                        />
+                        <TimeSeries
+                            dG4Year={caseItem?.DG4Date?.getFullYear()}
+                            setTimeSeries={setNetSalesGas}
+                            setHasChanges={setHasChanges}
+                            timeSeries={netSalesGas}
+                            timeSeriesTitle={`Net sales gas ${project?.physUnit === 0 ? "(GSm³)" : "(Oilfield)"}`}
+                            firstYear={firstTSYear}
+                            lastYear={lastTSYear}
+                            setFirstYear={setFirstTSYear}
+                            setLastYear={setLastTSYear}
+                        />
+                        <TimeSeries
+                            dG4Year={caseItem?.DG4Date?.getFullYear()}
+                            setTimeSeries={setFuelFlaringAndLosses}
+                            setHasChanges={setHasChanges}
+                            timeSeries={fuelFlaringAndLosses}
+                            timeSeriesTitle={`Fuel flaring and losses ${project?.physUnit === 0 ? "(GSm³)" : "(Oilfield)"}`}
+                            firstYear={firstTSYear}
+                            lastYear={lastTSYear}
+                            setFirstYear={setFirstTSYear}
+                            setLastYear={setLastTSYear}
+                        />
+                        <TimeSeries
+                            dG4Year={caseItem?.DG4Date?.getFullYear()}
+                            setTimeSeries={setProductionProfileGas}
+                            setHasChanges={setHasChanges}
+                            timeSeries={productionProfileGas}
+                            timeSeriesTitle={`Production profile gas ${project?.physUnit === 0 ? "(GSm³)" : "(Oilfield)"}`}
+                            firstYear={firstTSYear}
+                            lastYear={lastTSYear}
+                            setFirstYear={setFirstTSYear}
+                            setLastYear={setLastTSYear}
+                        />
+                        <TimeSeries
+                            dG4Year={caseItem?.DG4Date?.getFullYear()}
+                            setTimeSeries={setProductionProfileOil}
+                            setHasChanges={setHasChanges}
+                            timeSeries={productionProfileOil}
+                            timeSeriesTitle={`Production profile oil ${project?.physUnit === 0 ? "(MSm³)" : "(Oilfield)"}`}
+                            firstYear={firstTSYear}
+                            lastYear={lastTSYear}
+                            setFirstYear={setFirstTSYear}
+                            setLastYear={setLastTSYear}
+                        />
+                        <TimeSeries
+                            dG4Year={caseItem?.DG4Date?.getFullYear()}
+                            setTimeSeries={setProductionProfileWater}
+                            setHasChanges={setHasChanges}
+                            timeSeries={productionProfileWater}
+                            timeSeriesTitle={`Production profile water ${project?.physUnit === 0 ? "(MSm³)" : "(Oilfield)"}`}
+                            firstYear={firstTSYear}
+                            lastYear={lastTSYear}
+                            setFirstYear={setFirstTSYear}
+                            setLastYear={setLastTSYear}
+                        />
+                        <TimeSeries
+                            dG4Year={caseItem?.DG4Date?.getFullYear()}
+                            setTimeSeries={setProductionProfileWaterInjection}
+                            setHasChanges={setHasChanges}
+                            timeSeries={productionProfileWaterInjection}
+                            timeSeriesTitle={`Production profile water injection 
                     ${project?.physUnit === 0 ? "(MSm³)" : "(Oilfield)"}`}
-                firstYear={firstTSYear}
-                lastYear={lastTSYear}
-                setFirstYear={setFirstTSYear}
-                setLastYear={setLastTSYear}
-            />
-            <TimeSeries
-                dG4Year={caseItem?.DG4Date?.getFullYear()}
-                setTimeSeries={setProductionProfileNGL}
-                setHasChanges={setHasChanges}
-                timeSeries={productionProfileNGL}
-                timeSeriesTitle={`Production profile NGL 
+                            firstYear={firstTSYear}
+                            lastYear={lastTSYear}
+                            setFirstYear={setFirstTSYear}
+                            setLastYear={setLastTSYear}
+                        />
+                        <TimeSeries
+                            dG4Year={caseItem?.DG4Date?.getFullYear()}
+                            setTimeSeries={setProductionProfileNGL}
+                            setHasChanges={setHasChanges}
+                            timeSeries={productionProfileNGL}
+                            timeSeriesTitle={`Production profile NGL 
                     ${project?.physUnit === 0 ? "(million tonnes)" : "(Oilfield)"}`}
-                firstYear={firstTSYear}
-                lastYear={lastTSYear}
-                setFirstYear={setFirstTSYear!}
-                setLastYear={setLastTSYear}
-            />
-        </AssetViewDiv>
+                            firstYear={firstTSYear}
+                            lastYear={lastTSYear}
+                            setFirstYear={setFirstTSYear!}
+                            setLastYear={setLastTSYear}
+                        />
+                    </AssetViewDiv>
                 </MainView>
-                </Body>
-            </ProjectWrapper>
+            </Body>
+        </ProjectWrapper>
     )
 }
 

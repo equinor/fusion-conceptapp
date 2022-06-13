@@ -65,8 +65,9 @@ function Import({ onClose, onImport }: Props) {
         (async () => {
             try {
                 const projectId = unwrapProjectId(fusionProjectId)
+                // eslint-disable-next-line no-underscore-dangle
                 const _caseId = unwrapCaseId(caseId)
-                const projectResult: Project = await GetProjectService().getProjectByID(projectId)
+                const projectResult: Project = await (await GetProjectService()).getProjectByID(projectId)
                 setProject(projectResult)
                 const caseResult: Case = unwrapCase(projectResult.cases.find((o) => o.id === _caseId))
                 setCase(caseResult)

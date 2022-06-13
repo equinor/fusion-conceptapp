@@ -4,8 +4,9 @@ import {
 } from "@equinor/eds-core-react"
 import { search } from "@equinor/eds-icons"
 import { tokens } from "@equinor/eds-tokens"
-import {  } from "react-router-dom"
+import { } from "react-router-dom"
 import styled from "styled-components"
+import { useHistory } from "@equinor/fusion"
 import { Project } from "../models/Project"
 
 import { GetProjectService } from "../Services/ProjectService"
@@ -14,7 +15,6 @@ import { ProjectPath } from "../Utils/common"
 import { GetCommonLibraryService } from "../Services/CommonLibraryService"
 import { Modal } from "../Components/Modal"
 import ProjectModal from "./ProjectModal"
-import { useHistory } from "@equinor/fusion"
 
 const Wrapper = styled.div`
     margin: 2rem;
@@ -63,16 +63,14 @@ const DashboardView = () => {
         (async () => {
             if (!clp || !projects) {
                 try {
-                    
                     setFetching(true)
-                    await CommonLibraryService.getProjects().then((commonlibProjects) => {
+                    await (await CommonLibraryService).getProjects().then((commonlibProjects) => {
                         setCommonLibProjects(commonlibProjects)
                     })
-                    await ProjectService.getProjects().then((dcdProjects) => {
+                    await (await ProjectService).getProjects().then((dcdProjects) => {
                         setProjects(dcdProjects)
                     })
                     setFetching(false)
-                    
                 } catch (error) {
                     console.error("Could not retrieve commonlibprojects or dcdprojects. ", error)
                 }

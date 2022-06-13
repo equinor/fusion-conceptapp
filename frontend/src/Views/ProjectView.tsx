@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 // eslint-disable-next-line camelcase
 import { add, archive } from "@equinor/eds-icons"
 import {
@@ -107,7 +108,7 @@ const ProjectView = () => {
         (async () => {
             try {
                 const projectId: string = unwrapProjectId(fusionProjectId)
-                const res: Project = await GetProjectService().getProjectByID(projectId)
+                const res: Project = await (await GetProjectService()).getProjectByID(projectId)
                 if (res !== undefined) {
                     setPhysicalUnit(res?.physUnit)
                     setCurrency(res?.currency)
@@ -131,7 +132,7 @@ const ProjectView = () => {
                     const cases: Case[] = []
                     project.cases.forEach((c) => cases.push(Case.Copy(c)))
                     projectDto.cases = cases
-                    const res = await GetProjectService().updateProject(projectDto)
+                    const res = await (await GetProjectService()).updateProject(projectDto)
                     setProject(res)
                 }
             } catch (error) {
@@ -162,8 +163,8 @@ const ProjectView = () => {
 
         try {
             const projectId: string = unwrapProjectId(fusionProjectId)
-            const projectResult: Project = await GetProjectService().getProjectByID(projectId)
-            GetSTEAService().excelToSTEA(projectResult)
+            const projectResult: Project = await (await GetProjectService()).getProjectByID(projectId);
+            (await GetSTEAService()).excelToSTEA(projectResult)
         } catch (error) {
             console.error("[ProjectView] error while submitting form data", error)
         }
@@ -173,7 +174,7 @@ const ProjectView = () => {
         e.preventDefault()
 
         try {
-            const projectResult: Project = await GetCaseService().createCase({
+            const projectResult: Project = await (await GetCaseService()).createCase({
                 description: caseDescription,
                 name: caseName,
                 projectId: fusionProjectId,
@@ -191,109 +192,109 @@ const ProjectView = () => {
 
     return (
         <ProjectWrapper>
-        <Body>
-            <SideMenu />
-            <MainView>
-        <Wrapper>
-            <Header>
-                <Typography variant="h2">{project.name}</Typography>
-                <EdsProvider density="compact">
-                    <ActionsContainer>
-                        <Tooltip title="Export to STEA">
-                            <Button
-                                variant="ghost_icon"
-                                aria-label="Export to STEA"
-                                onClick={submitToSTEA}
-                            >
-                                <Icon data={archive} />
-                            </Button>
-                        </Tooltip>
-                        <Tooltip title="Add a case">
-                            <Button variant="ghost_icon" aria-label="Add a case" onClick={toggleCreateCaseModal}>
-                                <Icon data={add} />
-                            </Button>
-                        </Tooltip>
-                    </ActionsContainer>
-                </EdsProvider>
-            </Header>
+            <Body>
+                <SideMenu />
+                <MainView>
+                    <Wrapper>
+                        <Header>
+                            <Typography variant="h2">{project.name}</Typography>
+                            <EdsProvider density="compact">
+                                <ActionsContainer>
+                                    <Tooltip title="Export to STEA">
+                                        <Button
+                                            variant="ghost_icon"
+                                            aria-label="Export to STEA"
+                                            onClick={submitToSTEA}
+                                        >
+                                            <Icon data={archive} />
+                                        </Button>
+                                    </Tooltip>
+                                    <Tooltip title="Add a case">
+                                        <Button variant="ghost_icon" aria-label="Add a case" onClick={toggleCreateCaseModal}>
+                                            <Icon data={add} />
+                                        </Button>
+                                    </Tooltip>
+                                </ActionsContainer>
+                            </EdsProvider>
+                        </Header>
 
-            <WrapperColumn>
-                <ProjectDataFieldLabel>Description:</ProjectDataFieldLabel>
-                <Typography variant="h3">{project.description}</Typography>
-            </WrapperColumn>
-            <WrapperColumn>
-                <ProjectDataFieldLabel>Project Phase:</ProjectDataFieldLabel>
-                <Typography variant="h4" aria-label="Project phase">
-                    {GetProjectPhaseName(project.phase)}
-                </Typography>
-            </WrapperColumn>
-            <WrapperColumn>
-                <ProjectDataFieldLabel>Project Category:</ProjectDataFieldLabel>
-                <Typography variant="h4" aria-label="Project category">
-                    {GetProjectCategoryName(project.category)}
-                </Typography>
-            </WrapperColumn>
-            <WrapperColumn>
-                <ProjectDataFieldLabel>Country:</ProjectDataFieldLabel>
-                <Typography variant="h4" aria-label="Country">
-                    {project.country ?? "Not defined in Common Library"}
-                </Typography>
-            </WrapperColumn>
-            <PhysicalUnit
-                currentValue={physicalUnit}
-                setPhysicalUnit={setPhysicalUnit}
-                setProject={setProject}
-                project={project}
-            />
-            <Currency
-                currentValue={currency}
-                setCurrency={setCurrency}
-                setProject={setProject}
-                project={project}
-            />
-            <ChartsContainer>
-                <BarChart data={chartData!} title="Capex / case" />
-            </ChartsContainer>
+                        <WrapperColumn>
+                            <ProjectDataFieldLabel>Description:</ProjectDataFieldLabel>
+                            <Typography variant="h3">{project.description}</Typography>
+                        </WrapperColumn>
+                        <WrapperColumn>
+                            <ProjectDataFieldLabel>Project Phase:</ProjectDataFieldLabel>
+                            <Typography variant="h4" aria-label="Project phase">
+                                {GetProjectPhaseName(project.phase)}
+                            </Typography>
+                        </WrapperColumn>
+                        <WrapperColumn>
+                            <ProjectDataFieldLabel>Project Category:</ProjectDataFieldLabel>
+                            <Typography variant="h4" aria-label="Project category">
+                                {GetProjectCategoryName(project.category)}
+                            </Typography>
+                        </WrapperColumn>
+                        <WrapperColumn>
+                            <ProjectDataFieldLabel>Country:</ProjectDataFieldLabel>
+                            <Typography variant="h4" aria-label="Country">
+                                {project.country ?? "Not defined in Common Library"}
+                            </Typography>
+                        </WrapperColumn>
+                        <PhysicalUnit
+                            currentValue={physicalUnit}
+                            setPhysicalUnit={setPhysicalUnit}
+                            setProject={setProject}
+                            project={project}
+                        />
+                        <Currency
+                            currentValue={currency}
+                            setCurrency={setCurrency}
+                            setProject={setProject}
+                            project={project}
+                        />
+                        <ChartsContainer>
+                            <BarChart data={chartData!} title="Capex / case" />
+                        </ChartsContainer>
 
-            <Modal isOpen={createCaseModalIsOpen} title="Create a case" shards={[]}>
-                <CreateCaseForm>
-                    <TextField
-                        label="Name"
-                        id="name"
-                        name="name"
-                        placeholder="Enter a name"
-                        onChange={handleCaseNameChange}
-                    />
+                        <Modal isOpen={createCaseModalIsOpen} title="Create a case" shards={[]}>
+                            <CreateCaseForm>
+                                <TextField
+                                    label="Name"
+                                    id="name"
+                                    name="name"
+                                    placeholder="Enter a name"
+                                    onChange={handleCaseNameChange}
+                                />
 
-                    <TextField
-                        label="Description"
-                        id="description"
-                        name="description"
-                        placeholder="Enter a description"
-                        onChange={handleDescriptionChange}
-                    />
+                                <TextField
+                                    label="Description"
+                                    id="description"
+                                    name="description"
+                                    placeholder="Enter a description"
+                                    onChange={handleDescriptionChange}
+                                />
 
-                    <div>
-                        <Button
-                            type="submit"
-                            onClick={submitCreateCaseForm}
-                            disabled={caseName === "" || caseDescription === ""}
-                        >
-                            Create case
-                        </Button>
-                        <Button
-                            type="button"
-                            color="secondary"
-                            variant="ghost"
-                            onClick={toggleCreateCaseModal}
-                        >
-                            Cancel
-                        </Button>
-                    </div>
-                </CreateCaseForm>
-            </Modal>
-        </Wrapper>
-        </MainView>
+                                <div>
+                                    <Button
+                                        type="submit"
+                                        onClick={submitCreateCaseForm}
+                                        disabled={caseName === "" || caseDescription === ""}
+                                    >
+                                        Create case
+                                    </Button>
+                                    <Button
+                                        type="button"
+                                        color="secondary"
+                                        variant="ghost"
+                                        onClick={toggleCreateCaseModal}
+                                    >
+                                        Cancel
+                                    </Button>
+                                </div>
+                            </CreateCaseForm>
+                        </Modal>
+                    </Wrapper>
+                </MainView>
             </Body>
         </ProjectWrapper>
     )

@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import {
     Input, Label, Typography,
 } from "@equinor/eds-core-react"
@@ -5,6 +6,7 @@ import { useEffect, useState } from "react"
 import {
     useParams,
 } from "react-router"
+import styled from "styled-components"
 import Save from "../Components/Save"
 import AssetName from "../Components/AssetName"
 import TimeSeries from "../Components/TimeSeries"
@@ -25,7 +27,7 @@ import { TopsideCostProfile } from "../models/assets/topside/TopsideCostProfile"
 import { TopsideCessationCostProfile } from "../models/assets/topside/TopsideCessationCostProfile"
 import AssetCurrency from "../Components/AssetCurrency"
 import SideMenu from "../Components/SideMenu/SideMenu"
-import styled from "styled-components"
+import { IAssetService } from "../Services/IAssetService"
 
 const ProjectWrapper = styled.div`
     display: flex;
@@ -62,13 +64,16 @@ const TopsideView = () => {
     const [costProfile, setCostProfile] = useState<TopsideCostProfile>()
     const [cessationCostProfile, setCessationCostProfile] = useState<TopsideCessationCostProfile>()
     const [currency, setCurrency] = useState<Components.Schemas.Currency>(0)
+    const [topsideService, setTopsideService] = useState<IAssetService>()
 
     useEffect(() => {
         (async () => {
             try {
                 const projectId: string = unwrapProjectId(fusionProjectId)
-                const projectResult: Project = await GetProjectService().getProjectByID(projectId)
+                const projectResult: Project = await (await GetProjectService()).getProjectByID(projectId)
                 setProject(projectResult)
+                const service = await GetTopsideService()
+                setTopsideService(service)
             } catch (error) {
                 console.error(`[CaseView] Error while fetching project ${fusionProjectId}`, error)
             }
@@ -135,113 +140,113 @@ const TopsideView = () => {
 
     return (
         <ProjectWrapper>
-        <Body>
-            <SideMenu />
-            <MainView>
-        <AssetViewDiv>
-            <Wrapper>
-                <Typography variant="h2">Topside</Typography>
-                <Save
-                    name={topsideName}
-                    setHasChanges={setHasChanges}
-                    hasChanges={hasChanges}
-                    setAsset={setTopside}
-                    setProject={setProject}
-                    asset={topside!}
-                    assetService={GetTopsideService()}
-                    assetType={AssetTypeEnum.topsides}
-                />
-            </Wrapper>
-            <AssetName
-                setName={setTopsideName}
-                name={topsideName}
-                setHasChanges={setHasChanges}
-            />
-            <Wrapper>
-                <Typography variant="h4">DG3</Typography>
-                <Dg4Field>
-                    <Input disabled defaultValue={caseItem?.DG3Date?.toLocaleDateString("en-CA")} type="date" />
-                </Dg4Field>
-                <Typography variant="h4">DG4</Typography>
-                <Dg4Field>
-                    <Input disabled defaultValue={caseItem?.DG4Date?.toLocaleDateString("en-CA")} type="date" />
-                </Dg4Field>
-            </Wrapper>
-            <AssetCurrency
-                setCurrency={setCurrency}
-                setHasChanges={setHasChanges}
-                currentValue={currency}
-            />
-            <Wrapper>
-                <WrapperColumn>
-                    <Label htmlFor="name" label="Artificial lift" />
-                    <Input
-                        id="artificialLift"
-                        disabled
-                        defaultValue={GetArtificialLiftName(topside?.artificialLift)}
-                    />
-                </WrapperColumn>
-            </Wrapper>
-            <Wrapper>
-                <NumberInput
-                    setHasChanges={setHasChanges}
-                    setValue={setDryweight}
-                    value={dryweight ?? 0}
-                    integer
-                    label={`Topside dry weight ${project?.physUnit === 0 ? "(tonnes)" : "(Oilfield)"}`}
-                />
-                <NumberInput
-                    setHasChanges={setHasChanges}
-                    setValue={setOilCapacity}
-                    value={oilCapacity ?? 0}
-                    integer={false}
-                    label={`Capacity oil ${project?.physUnit === 0 ? "(Sm³/sd)" : "(Oilfield)"}`}
-                />
-                <NumberInput
-                    setHasChanges={setHasChanges}
-                    setValue={setGasCapacity}
-                    value={gasCapacity ?? 0}
-                    integer={false}
-                    label={`Capacity gas ${project?.physUnit === 0 ? "(MSm³/sd)" : "(Oilfield)"}`}
-                />
-                <NumberInput
-                    value={caseItem?.facilitiesAvailability ?? 0}
-                    integer={false}
-                    disabled
-                    label={`Facilities availability ${project?.physUnit === 0 ? "(%)" : "(Oilfield)"}`}
-                />
-            </Wrapper>
-            <Maturity
-                setMaturity={setMaturity}
-                currentValue={maturity}
-                setHasChanges={setHasChanges}
-            />
-            <TimeSeries
-                dG4Year={caseItem?.DG4Date?.getFullYear()}
-                setTimeSeries={setCostProfile}
-                setHasChanges={setHasChanges}
-                timeSeries={costProfile}
-                timeSeriesTitle={`Cost profile ${currency === 0 ? "(MUSD)" : "(MNOK)"}`}
-                firstYear={firstTSYear!}
-                lastYear={lastTSYear!}
-                setFirstYear={setFirstTSYear!}
-                setLastYear={setLastTSYear}
-            />
-            <TimeSeries
-                dG4Year={caseItem?.DG4Date?.getFullYear()}
-                setTimeSeries={setCessationCostProfile}
-                setHasChanges={setHasChanges}
-                timeSeries={cessationCostProfile}
-                timeSeriesTitle={`Cessation cost profile ${currency === 0 ? "(MUSD)" : "(MNOK)"}`}
-                firstYear={firstTSYear!}
-                lastYear={lastTSYear!}
-                setFirstYear={setFirstTSYear!}
-                setLastYear={setLastTSYear}
-            />
-        </AssetViewDiv>
+            <Body>
+                <SideMenu />
+                <MainView>
+                    <AssetViewDiv>
+                        <Wrapper>
+                            <Typography variant="h2">Topside</Typography>
+                            <Save
+                                name={topsideName}
+                                setHasChanges={setHasChanges}
+                                hasChanges={hasChanges}
+                                setAsset={setTopside}
+                                setProject={setProject}
+                                asset={topside!}
+                                assetService={topsideService!}
+                                assetType={AssetTypeEnum.topsides}
+                            />
+                        </Wrapper>
+                        <AssetName
+                            setName={setTopsideName}
+                            name={topsideName}
+                            setHasChanges={setHasChanges}
+                        />
+                        <Wrapper>
+                            <Typography variant="h4">DG3</Typography>
+                            <Dg4Field>
+                                <Input disabled defaultValue={caseItem?.DG3Date?.toLocaleDateString("en-CA")} type="date" />
+                            </Dg4Field>
+                            <Typography variant="h4">DG4</Typography>
+                            <Dg4Field>
+                                <Input disabled defaultValue={caseItem?.DG4Date?.toLocaleDateString("en-CA")} type="date" />
+                            </Dg4Field>
+                        </Wrapper>
+                        <AssetCurrency
+                            setCurrency={setCurrency}
+                            setHasChanges={setHasChanges}
+                            currentValue={currency}
+                        />
+                        <Wrapper>
+                            <WrapperColumn>
+                                <Label htmlFor="name" label="Artificial lift" />
+                                <Input
+                                    id="artificialLift"
+                                    disabled
+                                    defaultValue={GetArtificialLiftName(topside?.artificialLift)}
+                                />
+                            </WrapperColumn>
+                        </Wrapper>
+                        <Wrapper>
+                            <NumberInput
+                                setHasChanges={setHasChanges}
+                                setValue={setDryweight}
+                                value={dryweight ?? 0}
+                                integer
+                                label={`Topside dry weight ${project?.physUnit === 0 ? "(tonnes)" : "(Oilfield)"}`}
+                            />
+                            <NumberInput
+                                setHasChanges={setHasChanges}
+                                setValue={setOilCapacity}
+                                value={oilCapacity ?? 0}
+                                integer={false}
+                                label={`Capacity oil ${project?.physUnit === 0 ? "(Sm³/sd)" : "(Oilfield)"}`}
+                            />
+                            <NumberInput
+                                setHasChanges={setHasChanges}
+                                setValue={setGasCapacity}
+                                value={gasCapacity ?? 0}
+                                integer={false}
+                                label={`Capacity gas ${project?.physUnit === 0 ? "(MSm³/sd)" : "(Oilfield)"}`}
+                            />
+                            <NumberInput
+                                value={caseItem?.facilitiesAvailability ?? 0}
+                                integer={false}
+                                disabled
+                                label={`Facilities availability ${project?.physUnit === 0 ? "(%)" : "(Oilfield)"}`}
+                            />
+                        </Wrapper>
+                        <Maturity
+                            setMaturity={setMaturity}
+                            currentValue={maturity}
+                            setHasChanges={setHasChanges}
+                        />
+                        <TimeSeries
+                            dG4Year={caseItem?.DG4Date?.getFullYear()}
+                            setTimeSeries={setCostProfile}
+                            setHasChanges={setHasChanges}
+                            timeSeries={costProfile}
+                            timeSeriesTitle={`Cost profile ${currency === 0 ? "(MUSD)" : "(MNOK)"}`}
+                            firstYear={firstTSYear!}
+                            lastYear={lastTSYear!}
+                            setFirstYear={setFirstTSYear!}
+                            setLastYear={setLastTSYear}
+                        />
+                        <TimeSeries
+                            dG4Year={caseItem?.DG4Date?.getFullYear()}
+                            setTimeSeries={setCessationCostProfile}
+                            setHasChanges={setHasChanges}
+                            timeSeries={cessationCostProfile}
+                            timeSeriesTitle={`Cessation cost profile ${currency === 0 ? "(MUSD)" : "(MNOK)"}`}
+                            firstYear={firstTSYear!}
+                            lastYear={lastTSYear!}
+                            setFirstYear={setFirstTSYear!}
+                            setLastYear={setLastTSYear}
+                        />
+                    </AssetViewDiv>
                 </MainView>
-                </Body>
-            </ProjectWrapper>
+            </Body>
+        </ProjectWrapper>
     )
 }
 
