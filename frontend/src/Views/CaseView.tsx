@@ -23,6 +23,7 @@ import ProductionStrategyOverview from "../Components/ProductionStrategyOverview
 import NumberInput from "../Components/NumberInput"
 import { GetCaseService } from "../Services/CaseService"
 import SideMenu from "../Components/SideMenu/SideMenu"
+import ExcelUpload from "../Components/ExcelUpload"
 // import ExcelUpload from "../Components/ExcelUpload"
 
 const CaseViewDiv = styled.div`
@@ -141,7 +142,7 @@ function CaseView() {
                             setProject={setProject}
                             setCase={setCase}
                         />
-                        {/* <ExcelUpload /> */}
+                        <ExcelUpload setProject={setProject} setCase={setCase} />
                         <Tabs activeTab={activeTab} onChange={handleTabChange}>
                             <CaseDescription
                                 caseItem={caseItem}

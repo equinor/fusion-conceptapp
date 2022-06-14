@@ -43,8 +43,6 @@ const FindProjectText = styled(Typography)`
 `
 
 const DashboardView = () => {
-   // const navigate = useNavigate()
-
     const ProjectService = GetProjectService()
     const history = useHistory()
 
