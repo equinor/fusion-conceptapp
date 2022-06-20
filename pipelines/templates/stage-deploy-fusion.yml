@@ -122,9 +122,9 @@ stages:
             steps:
               - task: FileTransform@1
                 inputs:
-                  folderPath: '$(Build.SourcesDirectory)/backend/api/appsettings.json' 
-                  fileType: json
-                  #targetFiles: # Optional
+                  folderPath: '$(Build.SourcesDirectory)/backend/api' 
+                  fileType: 'json'
+                  targetFiles: '**/appsettings.json'
               - task: DotNetCoreCLI@2
                 displayName: Install dotnet-ef
                 inputs:
