@@ -131,6 +131,15 @@ stages:
                   command: "custom"
                   custom: "tool"
                   arguments: "install --global dotnet-ef"
+              - task: AzureCLI@2
+                displayName: Azure CLI
+                inputs:
+                    azureSubscription: 'dcd-pipeline-sp'
+                    scriptType: ps
+                    scriptLocation: inlineScript
+                    inlineScript: |
+                      az --version
+                      az account show
               - task: DotNetCoreCLI@2
                 displayName: "Apply DB migrations"
                 inputs:
