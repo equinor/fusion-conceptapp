@@ -1,4 +1,4 @@
-import { obtainAccessToken } from "../../auth/tokenProvider";
+import { obtainAccessToken } from "../../auth/tokenProvider"
 
 interface DefaultHeaders {
     headers: {
@@ -13,11 +13,11 @@ interface DefaultHeaders {
  * @return {*}  {Promise<HeaderContainer>}
  */
 export const getDefaultHeader = async (scopes: string[]): Promise<DefaultHeaders> => {
-    const token = await obtainAccessToken(scopes);
+    const token = await obtainAccessToken(scopes)
     return {
         headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
         },
-    };
-};
+    }
+}

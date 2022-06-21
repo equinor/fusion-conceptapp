@@ -1,7 +1,7 @@
 // eslint-disable-next-line max-len
 // Unfortunately it is very hard to mock this using jest, thus keeping this file as small as possible as it does not
 // have any test-coverage.
-declare const RADIX_ENVIRONMENT: string;
+declare const RADIX_ENVIRONMENT: string
 
 /**
  * The Environment variables for the entire application.
@@ -9,6 +9,6 @@ declare const RADIX_ENVIRONMENT: string;
  */
 const EnvironmentVariables = {
     RADIX_ENVIRONMENT: typeof RADIX_ENVIRONMENT !== "undefined" ? RADIX_ENVIRONMENT : "",
-};
+}
 
-export default EnvironmentVariables;
+export default EnvironmentVariables

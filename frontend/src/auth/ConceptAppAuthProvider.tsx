@@ -16,7 +16,7 @@ interface AuthHandlerProps {
 }
 
 const ConceptAppAuthContext = createContext<ConceptAppAuthContextState | undefined>(undefined)
-ConceptAppAuthContext.displayName = "PitstopAuthContext"
+ConceptAppAuthContext.displayName = "ConceptAppAuthContext"
 
 /**
  * A "wrapper" around MSAL authentication as a component, using hooks to actually perform (silent) token acquisition
