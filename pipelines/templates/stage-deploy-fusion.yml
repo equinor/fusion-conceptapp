@@ -135,7 +135,7 @@ stages:
                 displayName: Azure CLI
                 inputs:
                     azureSubscription: 'dcd-pipeline-sp'
-                    scriptType: ps
+                    scriptType: pscore
                     scriptLocation: inlineScript
                     inlineScript: |
                       az --version
