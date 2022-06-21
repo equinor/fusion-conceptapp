@@ -139,5 +139,5 @@ stages:
                     scriptLocation: inlineScript
                     inlineScript: |
                       cd "$(Build.SourcesDirectory)/backend/api"
-                      dotnet ef database update --connection \"${{ parameters.DBContext }}\" --verbose
+                      dotnet ef database update --verbose
                       
