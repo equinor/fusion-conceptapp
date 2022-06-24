@@ -29,11 +29,15 @@ const fusionPrefix = `/apps/${appKey}`
  * @return {*}  {JSX.Element}
  */
 export function FusionRouterBootstrap({ children }: Props): JSX.Element {
-    const { env } = useFusionEnvironment()
+    const a = useFusionEnvironment()
+    const env = null
+    console.log("Entered fusionrouterbootstrapper")
     const history = useMemo(() => {
         const basename = env ? fusionPrefix : "/"
         return createBrowserHistory({ basename })
     }, [env])
+
+    console.log("History: ", history)
 
     return (
         // eslint-disable-next-line react/jsx-no-constructed-context-values

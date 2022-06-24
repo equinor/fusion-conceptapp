@@ -26,6 +26,7 @@ import { WellProjectCostProfile } from "../models/assets/wellproject/WellProject
 import AssetCurrency from "../Components/AssetCurrency"
 import SideMenu from "../Components/SideMenu/SideMenu"
 import { IAssetService } from "../Services/IAssetService"
+import ArtificialLiftInherited from "../Components/ArtificialLiftInherited"
 
 const ProjectWrapper = styled.div`
     display: flex;
@@ -33,7 +34,6 @@ const ProjectWrapper = styled.div`
     height: 100vh;
     width: 100vw;
 `
-
 const Body = styled.div`
     display: flex;
     flex-direction: row;
@@ -41,11 +41,11 @@ const Body = styled.div`
     width: 100%;
     height: 100%;
 `
-
 const MainView = styled.div`
     width: calc(100% - 15rem);
     overflow: scroll;
 `
+
 function WellProjectView() {
     const [project, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
@@ -60,8 +60,9 @@ function WellProjectView() {
     const [rigMobDemob, setRigMobDemob] = useState<number>()
     const [costProfile, setCostProfile] = useState<WellProjectCostProfile>()
     const [drillingSchedule, setDrillingSchedule] = useState<DrillingSchedule>()
-    const [currency, setCurrency] = useState<Components.Schemas.Currency>(0)
+    const [currency, setCurrency] = useState<Components.Schemas.Currency>(1)
     const [wellProjectService, setWellProjectService] = useState<IAssetService>()
+    const [artificialLift, setArtificialLift] = useState<Components.Schemas.ArtificialLift | undefined>()
 
     useEffect(() => {
         (async () => {
@@ -97,10 +98,11 @@ function WellProjectView() {
                 setAnnualWellInterventionCost(newWellProject.annualWellInterventionCost)
                 setPluggingAndAbandonment(newWellProject.pluggingAndAbandonment)
                 setRigMobDemob(newWellProject.rigMobDemob)
-                setCurrency(newWellProject.currency ?? 0)
+                setCurrency(newWellProject.currency ?? 1)
 
                 setCostProfile(newWellProject.costProfile)
                 setDrillingSchedule(newWellProject.drillingSchedule)
+                setArtificialLift(newWellProject.artificialLift)
 
                 if (caseResult?.DG4Date) {
                     initializeFirstAndLastYear(
@@ -122,6 +124,7 @@ function WellProjectView() {
         newWellProject.costProfile = costProfile
         newWellProject.drillingSchedule = drillingSchedule
         newWellProject.currency = currency
+        newWellProject.artificialLift = artificialLift
         if (caseItem?.DG4Date) {
             initializeFirstAndLastYear(
                 caseItem?.DG4Date?.getFullYear(),
@@ -131,7 +134,8 @@ function WellProjectView() {
             )
         }
         setWellProject(newWellProject)
-    }, [annualWellInterventionCost, pluggingAndAbandonment, rigMobDemob, costProfile, drillingSchedule, currency])
+    }, [annualWellInterventionCost, pluggingAndAbandonment, rigMobDemob, costProfile, drillingSchedule, currency,
+         artificialLift])
 
     return (
         <ProjectWrapper>
@@ -218,7 +222,7 @@ function WellProjectView() {
                             setTimeSeries={setCostProfile}
                             setHasChanges={setHasChanges}
                             timeSeries={costProfile}
-                            timeSeriesTitle={`Cost profile ${currency === 0 ? "(MUSD)" : "(MNOK)"}`}
+                            timeSeriesTitle={`Cost profile ${currency === 2 ? "(MUSD)" : "(MNOK)"}`}
                             firstYear={firstTSYear!}
                             lastYear={lastTSYear!}
                             setFirstYear={setFirstTSYear!}

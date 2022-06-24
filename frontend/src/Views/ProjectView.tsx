@@ -19,8 +19,6 @@ import {
 import { useParams, useHistory } from "react-router-dom"
 import styled from "styled-components"
 
-import BarChart from "../Components/BarChart"
-
 import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 
@@ -34,6 +32,7 @@ import PhysicalUnit from "../Components/PhysicalUnit"
 import Currency from "../Components/Currency"
 import { Case } from "../models/Case"
 import SideMenu from "../Components/SideMenu/SideMenu"
+import LinearDataTable from "../Components/LinearDataTable"
 
 const Wrapper = styled.div`
     margin: 2rem;
@@ -102,7 +101,11 @@ const ProjectView = () => {
     const [caseName, setCaseName] = useState<string>("")
     const [caseDescription, setCaseDescription] = useState<string>("")
     const [physicalUnit, setPhysicalUnit] = useState<Components.Schemas.PhysUnit>(0)
-    const [currency, setCurrency] = useState<Components.Schemas.PhysUnit>(0)
+    const [currency, setCurrency] = useState<Components.Schemas.Currency>(1)
+
+    const [capexYearXLabels, setCapexYearXLabels] = useState<number[]>([])
+    const [capexYearYDatas, setCapexYearYDatas] = useState<number[][]>([[]])
+    const [capexYearCaseTitles, setCapexYearCaseTitles] = useState<string[]>([])
 
     useEffect(() => {
         (async () => {
@@ -141,10 +144,25 @@ const ProjectView = () => {
         })()
     }, [physicalUnit, currency])
 
-    const chartData = useMemo(() => (project ? {
-        x: project?.cases.map((c) => c.name ?? ""),
-        y: project?.cases.map((c) => c.capex ?? 0),
-    } : { x: [], y: [] }), [project])
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const generateChartDataForCapexYear = useMemo(() => {
+        const years: number[] = []
+        const values: number[][] = []
+        const caseTitles: string[] = []
+        project?.cases.forEach((casee) => {
+            if (casee.capexYear?.startYear !== null) {
+                years.push(casee.capexYear?.startYear!)
+            }
+            if (casee.capexYear?.values?.length !== 0) {
+                values.push(casee.capexYear?.values!)
+                caseTitles?.push(casee.name!)
+            }
+        })
+
+        setCapexYearXLabels(years)
+        setCapexYearYDatas(values)
+        setCapexYearCaseTitles(caseTitles)
+    }, [project])
 
     const toggleCreateCaseModal = () => setCreateCaseModalIsOpen(!createCaseModalIsOpen)
 
@@ -180,7 +198,7 @@ const ProjectView = () => {
                 projectId: fusionProjectId,
             })
             toggleCreateCaseModal()
-            history.push(`/project/${projectResult.id}/case/${projectResult.cases.find((o) => (
+            history.push(`/${projectResult.id}/case/${projectResult.cases.find((o) => (
                 o.name === caseName
             ))?.id}`)
         } catch (error) {
@@ -253,7 +271,15 @@ const ProjectView = () => {
                             project={project}
                         />
                         <ChartsContainer>
-                            <BarChart data={chartData!} title="Capex / case" />
+                            {capexYearXLabels.length !== 0
+                                ? (
+                                    <LinearDataTable
+                                        capexYearX={capexYearXLabels}
+                                        capexYearY={capexYearYDatas}
+                                        caseTitles={capexYearCaseTitles}
+                                    />
+                                )
+                                : <Typography> No cases containing CapEx to display data for</Typography>}
                         </ChartsContainer>
 
                         <Modal isOpen={createCaseModalIsOpen} title="Create a case" shards={[]}>
