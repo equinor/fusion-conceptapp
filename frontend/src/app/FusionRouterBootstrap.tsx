@@ -29,9 +29,7 @@ const fusionPrefix = `/apps/${appKey}`
  * @return {*}  {JSX.Element}
  */
 export function FusionRouterBootstrap({ children }: Props): JSX.Element {
-    const a = useFusionEnvironment()
-    const env = null
-    console.log("Entered fusionrouterbootstrapper")
+    const { env } = useFusionEnvironment()
     const history = useMemo(() => {
         const basename = env ? fusionPrefix : "/"
         return createBrowserHistory({ basename })
