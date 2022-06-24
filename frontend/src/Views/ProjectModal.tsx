@@ -8,7 +8,6 @@ import {
 import React, { ChangeEvent, useEffect, useState } from "react"
 import { search } from "@equinor/eds-icons"
 import { tokens } from "@equinor/eds-tokens"
-import {  } from "react-router-dom"
 import styled from "styled-components"
 import { Modal } from "../Components/Modal"
 import { ProjectCategory } from "../models/ProjectCategory"

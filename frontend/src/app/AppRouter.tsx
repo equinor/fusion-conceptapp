@@ -1,4 +1,5 @@
-import { Route, Switch } from "react-router-dom"
+import { useEffect } from "react"
+import { Route, Switch, useHistory } from "react-router-dom"
 import CaseView from "../Views/CaseView"
 import DrainageStrategyView from "../Views/DrainageStrategyView"
 import ExplorationView from "../Views/ExplorationView"
@@ -7,14 +8,19 @@ import SubstructureView from "../Views/SubstructureView"
 import SurfView from "../Views/SurfView"
 import TopsideView from "../Views/TopsideView"
 import TransportView from "../Views/TransportView"
-import { ViewsContainer } from "../Views/ViewsContainer"
+import Welcome from "../Views/Welcome"
 import WellProjectView from "../Views/WellProjectView"
 
 export function AppRouter(): JSX.Element {
+    const history = useHistory()
+    useEffect(() => {
+        console.log("useEffect in AppRouter")
+        // history.push("123")
+    }, [])
     return (
         <Switch>
             <Route exact path="/">
-                <ViewsContainer />
+                <Welcome />
             </Route>
             <Route exact path="/:fusionProjectId">
                 <ProjectView />

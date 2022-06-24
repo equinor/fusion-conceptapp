@@ -29,14 +29,11 @@ const MainView = styled.div`
     overflow: scroll;
 `
 
-export const ViewsContainer: VoidFunctionComponent = () => {
-    return (
-        <Wrapper>
-            <Body>
-                <SideMenu />
-                <MainView>
-                </MainView>
-            </Body>
-        </Wrapper>
+export const ViewsContainer: VoidFunctionComponent = () => (
+    <Wrapper>
+        <Body>
+            <SideMenu />
+            <MainView />
+        </Body>
+    </Wrapper>
     )
-}

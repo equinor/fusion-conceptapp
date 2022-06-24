@@ -21,7 +21,11 @@ function App(): JSX.Element {
         <ErrorBoundary>
             <ConceptAppAuthProvider>
                 {(() => {
-                    if (!user) return <p>pls login</p>
+                    if (!user) {
+                        console.log("User not logged")
+                        return <p>pls login</p>
+                    }
+                    console.log("User logged in")
                     return (
                         <FusionRouterBootstrap>
                             <AppRouter />

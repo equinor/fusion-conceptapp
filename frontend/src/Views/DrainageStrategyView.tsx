@@ -33,6 +33,7 @@ import { ProductionProfileWaterInjection } from "../models/assets/drainagestrate
 import { ProductionProfileNGL } from "../models/assets/drainagestrategy/ProductionProfileNGL"
 import SideMenu from "../Components/SideMenu/SideMenu"
 import { IAssetService } from "../Services/IAssetService"
+import NumberInputInherited from "../Components/NumberInputInherited"
 
 const ProjectWrapper = styled.div`
     display: flex;
@@ -70,6 +71,11 @@ const DrainageStrategyView = () => {
     // eslint-disable-next-line max-len
     const [productionProfileWaterInjection, setProductionProfileWaterInjection] = useState<ProductionProfileWaterInjection>()
     const [nGLYield, setNGLYield] = useState<number>()
+    const [artificialLift, setArtificialLift] = useState<Components.Schemas.ArtificialLift | undefined>()
+    const [producerCount, setProducerCount] = useState<number>()
+    const [gasInjectorCount, setGasInjectorCount] = useState<number>()
+    const [waterInjectorCount, setWaterInjectorCount] = useState<number>()
+    const [facilitiesAvailability, setFacilitiesAvailability] = useState<number>()
 
     const [hasChanges, setHasChanges] = useState(false)
     const { fusionProjectId, caseId, drainageStrategyId } = useParams<Record<string, string | undefined>>()
@@ -119,6 +125,11 @@ const DrainageStrategyView = () => {
                 setProductionProfileWater(newDrainage.productionProfileWater)
                 setProductionProfileWaterInjection(newDrainage.productionProfileWaterInjection)
                 setProductionProfileNGL(newDrainage.productionProfileNGL)
+                setArtificialLift(newDrainage.artificialLift)
+                setGasInjectorCount(newDrainage?.gasInjectorCount)
+                setWaterInjectorCount(newDrainage?.waterInjectorCount)
+                setProducerCount(newDrainage?.producerCount)
+                setFacilitiesAvailability(newDrainage?.facilitiesAvailability)
 
                 if (caseResult?.DG4Date) {
                     initializeFirstAndLastYear(
@@ -146,6 +157,11 @@ const DrainageStrategyView = () => {
         newDrainage.productionProfileWater = productionProfileWater
         newDrainage.productionProfileWaterInjection = productionProfileWaterInjection
         newDrainage.productionProfileNGL = productionProfileNGL
+        newDrainage.artificialLift = artificialLift
+        newDrainage.producerCount = producerCount
+        newDrainage.gasInjectorCount = gasInjectorCount
+        newDrainage.waterInjectorCount = waterInjectorCount
+        newDrainage.facilitiesAvailability = facilitiesAvailability
         setDrainageStrategy(newDrainage)
 
         if (caseItem?.DG4Date) {
@@ -161,7 +177,8 @@ const DrainageStrategyView = () => {
         }
     }, [nGLYield, co2Emissions, netSalesGas, fuelFlaringAndLosses,
         productionProfileGas, productionProfileOil, productionProfileWater, productionProfileWaterInjection,
-        productionProfileNGL])
+        productionProfileNGL, artificialLift, producerCount, gasInjectorCount, waterInjectorCount,
+        facilitiesAvailability])
 
     return (
         <ProjectWrapper>
@@ -213,31 +230,39 @@ const DrainageStrategyView = () => {
                                 value={nGLYield ?? 0}
                                 setHasChanges={setHasChanges}
                                 integer={false}
-                                label={`NGL yield ${project?.physUnit === 0 ? "(tonnes/MSm³)" : "(Oilfield)"}`}
+                                label={`NGL yield ${project?.physUnit === 0 ? "(Sm³/MSm³)" : "(bbls/mill scf)"}`}
                             />
-                            <NumberInput
+                            <NumberInputInherited
                                 value={drainageStrategy?.producerCount ?? 0}
+                                setValue={setProducerCount}
+                                setHasChanges={setHasChanges}
                                 integer
-                                disabled
                                 label="Producer count"
+                                caseValue={caseItem?.producerCount}
                             />
-                            <NumberInput
+                            <NumberInputInherited
                                 value={drainageStrategy?.gasInjectorCount ?? 0}
+                                setValue={setGasInjectorCount}
+                                setHasChanges={setHasChanges}
                                 integer
-                                disabled
                                 label="Gas injector count"
+                                caseValue={caseItem?.gasInjectorCount}
                             />
-                            <NumberInput
+                            <NumberInputInherited
                                 value={drainageStrategy?.waterInjectorCount ?? 0}
+                                setValue={setWaterInjectorCount}
+                                setHasChanges={setHasChanges}
                                 integer
-                                disabled
                                 label="Water injector count"
+                                caseValue={caseItem?.waterInjectorCount}
                             />
-                            <NumberInput
-                                value={caseItem?.facilitiesAvailability ?? 0}
+                            <NumberInputInherited
+                                value={drainageStrategy?.facilitiesAvailability ?? 0}
+                                setValue={setFacilitiesAvailability}
+                                setHasChanges={setHasChanges}
                                 integer={false}
-                                disabled
-                                label={`Facilities availability ${project?.physUnit === 0 ? "(%)" : "(Oilfield)"}`}
+                                label="Facilities availability (%)"
+                                caseValue={caseItem?.facilitiesAvailability}
                             />
                         </Wrapper>
                         <TimeSeries
@@ -245,7 +270,7 @@ const DrainageStrategyView = () => {
                             setTimeSeries={setCo2Emissions}
                             setHasChanges={setHasChanges}
                             timeSeries={co2Emissions}
-                            timeSeriesTitle={`CO2 emissions ${project?.physUnit === 0 ? "(million tonnes)" : "(Oilfield)"}`}
+                            timeSeriesTitle="CO2 emissions (MTPA)"
                             firstYear={firstTSYear}
                             lastYear={lastTSYear}
                             setFirstYear={setFirstTSYear}
@@ -256,7 +281,7 @@ const DrainageStrategyView = () => {
                             setTimeSeries={setNetSalesGas}
                             setHasChanges={setHasChanges}
                             timeSeries={netSalesGas}
-                            timeSeriesTitle={`Net sales gas ${project?.physUnit === 0 ? "(GSm³)" : "(Oilfield)"}`}
+                            timeSeriesTitle={`Net sales gas ${project?.physUnit === 0 ? "(GSm³/yr)" : "(Bscf/yr)"}`}
                             firstYear={firstTSYear}
                             lastYear={lastTSYear}
                             setFirstYear={setFirstTSYear}
@@ -267,7 +292,7 @@ const DrainageStrategyView = () => {
                             setTimeSeries={setFuelFlaringAndLosses}
                             setHasChanges={setHasChanges}
                             timeSeries={fuelFlaringAndLosses}
-                            timeSeriesTitle={`Fuel flaring and losses ${project?.physUnit === 0 ? "(GSm³)" : "(Oilfield)"}`}
+                            timeSeriesTitle={`Fuel flaring and losses ${project?.physUnit === 0 ? "(GSm³/yr)" : "(Bscf/yr)"}`}
                             firstYear={firstTSYear}
                             lastYear={lastTSYear}
                             setFirstYear={setFirstTSYear}
@@ -278,7 +303,7 @@ const DrainageStrategyView = () => {
                             setTimeSeries={setProductionProfileGas}
                             setHasChanges={setHasChanges}
                             timeSeries={productionProfileGas}
-                            timeSeriesTitle={`Production profile gas ${project?.physUnit === 0 ? "(GSm³)" : "(Oilfield)"}`}
+                            timeSeriesTitle={`Production profile gas ${project?.physUnit === 0 ? "(GSm³/yr)" : "(Bscf/yr)"}`}
                             firstYear={firstTSYear}
                             lastYear={lastTSYear}
                             setFirstYear={setFirstTSYear}
@@ -289,7 +314,7 @@ const DrainageStrategyView = () => {
                             setTimeSeries={setProductionProfileOil}
                             setHasChanges={setHasChanges}
                             timeSeries={productionProfileOil}
-                            timeSeriesTitle={`Production profile oil ${project?.physUnit === 0 ? "(MSm³)" : "(Oilfield)"}`}
+                            timeSeriesTitle={`Production profile oil ${project?.physUnit === 0 ? "(MSm³/yr)" : "(mill bbls/yr)"}`}
                             firstYear={firstTSYear}
                             lastYear={lastTSYear}
                             setFirstYear={setFirstTSYear}
@@ -300,7 +325,7 @@ const DrainageStrategyView = () => {
                             setTimeSeries={setProductionProfileWater}
                             setHasChanges={setHasChanges}
                             timeSeries={productionProfileWater}
-                            timeSeriesTitle={`Production profile water ${project?.physUnit === 0 ? "(MSm³)" : "(Oilfield)"}`}
+                            timeSeriesTitle={`Production profile water ${project?.physUnit === 0 ? "(MSm³/yr)" : "(mill bbls/yr)"}`}
                             firstYear={firstTSYear}
                             lastYear={lastTSYear}
                             setFirstYear={setFirstTSYear}
@@ -312,7 +337,7 @@ const DrainageStrategyView = () => {
                             setHasChanges={setHasChanges}
                             timeSeries={productionProfileWaterInjection}
                             timeSeriesTitle={`Production profile water injection 
-                    ${project?.physUnit === 0 ? "(MSm³)" : "(Oilfield)"}`}
+                            ${project?.physUnit === 0 ? "(MSm³/yr)" : "(mill bbls/yr)"}`}
                             firstYear={firstTSYear}
                             lastYear={lastTSYear}
                             setFirstYear={setFirstTSYear}
@@ -323,8 +348,7 @@ const DrainageStrategyView = () => {
                             setTimeSeries={setProductionProfileNGL}
                             setHasChanges={setHasChanges}
                             timeSeries={productionProfileNGL}
-                            timeSeriesTitle={`Production profile NGL 
-                    ${project?.physUnit === 0 ? "(million tonnes)" : "(Oilfield)"}`}
+                            timeSeriesTitle="Production profile NGL (MTPA)"
                             firstYear={firstTSYear}
                             lastYear={lastTSYear}
                             setFirstYear={setFirstTSYear!}
