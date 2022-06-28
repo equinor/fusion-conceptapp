@@ -1,13 +1,8 @@
-/* eslint-disable max-len */
-/* eslint-disable class-methods-use-this */
-import axios from "axios"
 import { Project } from "../models/Project"
 import { config } from "./config"
 import { __BaseService } from "./__BaseService"
-import { getDefaultHeader } from "../api/common/defaultHeader"
 
 import { LoginAccessTokenKey, GetToken } from "../Utils/common"
-import apiConfig from "../api/apiConfig"
 
 export class __ProjectService extends __BaseService {
     async getProjects() {
