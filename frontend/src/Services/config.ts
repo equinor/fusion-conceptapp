@@ -4,7 +4,7 @@ export type ServiceConfig = {
     headers?: Record<string, string>
 }
 
-const tempConfig = {
+const configuration = {
     CaseService: {
         BASE_URL: "",
     },
@@ -47,18 +47,18 @@ const tempConfig = {
 }
 
 export const buildConfig = (baseUrl: string) => {
-    tempConfig.CaseService.BASE_URL = `${baseUrl}cases`
-    tempConfig.CommonLibraryService.BASE_URL = `${baseUrl}common-library`
-    tempConfig.ProjectService.BASE_URL = `${baseUrl}projects`
-    tempConfig.DrainageStrategyService.BASE_URL = `${baseUrl}drainage-strategies`
-    tempConfig.ExplorationService.BASE_URL = `${baseUrl}explorations`
-    tempConfig.WellProjectService.BASE_URL = `${baseUrl}well-projects`
-    tempConfig.SurfService.BASE_URL = `${baseUrl}surfs`
-    tempConfig.TopsideService.BASE_URL = `${baseUrl}topsides`
-    tempConfig.SubstructureService.BASE_URL = `${baseUrl}substructures`
-    tempConfig.TransportService.BASE_URL = `${baseUrl}transports`
-    tempConfig.STEAService.BASE_URL = `${baseUrl}stea`
-    tempConfig.UploadService.BASE_URL = `${baseUrl}Upload`
+    configuration.CaseService.BASE_URL = `${baseUrl}/cases`
+    configuration.CommonLibraryService.BASE_URL = `${baseUrl}/common-library`
+    configuration.ProjectService.BASE_URL = `${baseUrl}/projects`
+    configuration.DrainageStrategyService.BASE_URL = `${baseUrl}/drainage-strategies`
+    configuration.ExplorationService.BASE_URL = `${baseUrl}/explorations`
+    configuration.WellProjectService.BASE_URL = `${baseUrl}/well-projects`
+    configuration.SurfService.BASE_URL = `${baseUrl}/surfs`
+    configuration.TopsideService.BASE_URL = `${baseUrl}/topsides`
+    configuration.SubstructureService.BASE_URL = `${baseUrl}/substructures`
+    configuration.TransportService.BASE_URL = `${baseUrl}/transports`
+    configuration.STEAService.BASE_URL = `${baseUrl}/stea`
+    configuration.UploadService.BASE_URL = `${baseUrl}/Upload`
 }
 
-export const config = tempConfig
+export const config = Object.freeze(configuration)
