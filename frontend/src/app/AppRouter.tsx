@@ -12,11 +12,6 @@ import Welcome from "../Views/Welcome"
 import WellProjectView from "../Views/WellProjectView"
 
 export function AppRouter(): JSX.Element {
-    const history = useHistory()
-    useEffect(() => {
-        console.log("useEffect in AppRouter")
-        // history.push("123")
-    }, [])
     return (
         <Switch>
             <Route exact path="/">

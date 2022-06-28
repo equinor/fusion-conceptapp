@@ -1,7 +1,9 @@
-import { useCurrentUser, useFusionEnvironment } from "@equinor/fusion"
+import { buildConfiguration } from "@azure/msal-browser/dist/config/Configuration"
+import { useAppConfig, useCurrentUser, useFusionEnvironment } from "@equinor/fusion"
 import { ErrorBoundary } from "@equinor/fusion-components"
 import { FUSION_ENV_LOCAL_CACHE_KEY } from "../api/apiConfig"
 import ConceptAppAuthProvider from "../auth/ConceptAppAuthProvider"
+import { buildConfig } from "../Services/config"
 import { AppRouter } from "./AppRouter"
 import { FusionRouterBootstrap } from "./FusionRouterBootstrap"
 
@@ -17,15 +19,24 @@ const setEnvironment = (): void => {
 function App(): JSX.Element {
     setEnvironment()
     const user = useCurrentUser()
+    const runtimeConfig = useAppConfig()
+    if (runtimeConfig.value?.endpoints.REACT_APP_API_BASE_URL) {
+        buildConfig(runtimeConfig.value!.endpoints.REACT_APP_API_BASE_URL)
+    }
     return (
         <ErrorBoundary>
             <ConceptAppAuthProvider>
                 {(() => {
                     if (!user) {
-                        console.log("User not logged")
                         return <p>pls login</p>
                     }
-                    console.log("User logged in")
+                    // eslint-disable-next-line max-len
+                    if (runtimeConfig.value?.endpoints.REACT_APP_API_BASE_URL === null || runtimeConfig.value?.endpoints.REACT_APP_API_BASE_URL === undefined) {
+                        return <p> fetching</p>
+                    }
+
+                    buildConfig(runtimeConfig.value!.endpoints.REACT_APP_API_BASE_URL)
+
                     return (
                         <FusionRouterBootstrap>
                             <AppRouter />

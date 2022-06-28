@@ -16,12 +16,8 @@ export class __ProjectService extends __BaseService {
     }
 
     async getProjectByID(id: string) {
-        // const project: Components.Schemas.ProjectDto = await this.get<Components.Schemas.ProjectDto>(`/${id}`)
-        const configApi = apiConfig()
-        const url = `${configApi.baseApiUrl}/projects/${id}`
-        const scopes = ["api://9b125a0c-4907-43b9-8db2-ff405d6b0524/.default"]
-        const project = await axios.get(url, await getDefaultHeader(scopes))
-        return Project.fromJSON(project.data)
+        const project: Components.Schemas.ProjectDto = await this.get<Components.Schemas.ProjectDto>(`/${id}`)
+        return Project.fromJSON(project)
     }
 
     createProject(project: Components.Schemas.ProjectDto) {
