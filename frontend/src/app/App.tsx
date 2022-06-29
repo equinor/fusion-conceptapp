@@ -1,4 +1,3 @@
-import { buildConfiguration } from "@azure/msal-browser/dist/config/Configuration"
 import { useAppConfig, useCurrentUser, useFusionEnvironment } from "@equinor/fusion"
 import { ErrorBoundary } from "@equinor/fusion-components"
 import { FUSION_ENV_LOCAL_CACHE_KEY } from "../api/apiConfig"
@@ -28,11 +27,11 @@ function App(): JSX.Element {
             <ConceptAppAuthProvider>
                 {(() => {
                     if (!user) {
-                        return <p>pls login</p>
+                        return <p>Please login</p>
                     }
                     // eslint-disable-next-line max-len
                     if (runtimeConfig.value?.endpoints.REACT_APP_API_BASE_URL === null || runtimeConfig.value?.endpoints.REACT_APP_API_BASE_URL === undefined) {
-                        return <p> fetching</p>
+                        return <p>Fetching Fusion app config</p>
                     }
 
                     buildConfig(runtimeConfig.value!.endpoints.REACT_APP_API_BASE_URL)

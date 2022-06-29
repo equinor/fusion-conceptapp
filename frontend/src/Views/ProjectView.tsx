@@ -1,5 +1,3 @@
-/* eslint-disable max-len */
-// eslint-disable-next-line camelcase
 import { add, archive } from "@equinor/eds-icons"
 import {
     Button,
@@ -31,7 +29,6 @@ import { WrapperColumn } from "./Asset/StyledAssetComponents"
 import PhysicalUnit from "../Components/PhysicalUnit"
 import Currency from "../Components/Currency"
 import { Case } from "../models/Case"
-import SideMenu from "../Components/SideMenu/SideMenu"
 import LinearDataTable from "../Components/LinearDataTable"
 
 const Wrapper = styled.div`
@@ -73,26 +70,6 @@ const CreateCaseForm = styled.form`
     }
 `
 
-const ProjectWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    width: 100vw;
-`
-
-const Body = styled.div`
-    display: flex;
-    flex-direction: row;
-    flex-row: 1;
-    width: 100%;
-    height: 100%;
-`
-
-const MainView = styled.div`
-    width: calc(100% - 15rem);
-    overflow: scroll;
-`
-
 const ProjectView = () => {
     const history = useHistory()
     const { fusionProjectId } = useParams<Record<string, string | undefined>>()
@@ -110,8 +87,8 @@ const ProjectView = () => {
     useEffect(() => {
         (async () => {
             try {
-                const projectId: string = unwrapProjectId(fusionProjectId)
-                const res: Project = await (await GetProjectService()).getProjectByID(projectId)
+                const projectId = unwrapProjectId(fusionProjectId)
+                const res = await (await GetProjectService()).getProjectByID(projectId)
                 if (res !== undefined) {
                     setPhysicalUnit(res?.physUnit)
                     setCurrency(res?.currency)
@@ -209,120 +186,113 @@ const ProjectView = () => {
     if (!project) return null
 
     return (
-        <ProjectWrapper>
-            <Body>
-                <SideMenu />
-                <MainView>
-                    <Wrapper>
-                        <Header>
-                            <Typography variant="h2">{project.name}</Typography>
-                            <EdsProvider density="compact">
-                                <ActionsContainer>
-                                    <Tooltip title="Export to STEA">
-                                        <Button
-                                            variant="ghost_icon"
-                                            aria-label="Export to STEA"
-                                            onClick={submitToSTEA}
-                                        >
-                                            <Icon data={archive} />
-                                        </Button>
-                                    </Tooltip>
-                                    <Tooltip title="Add a case">
-                                        <Button variant="ghost_icon" aria-label="Add a case" onClick={toggleCreateCaseModal}>
-                                            <Icon data={add} />
-                                        </Button>
-                                    </Tooltip>
-                                </ActionsContainer>
-                            </EdsProvider>
-                        </Header>
+        <Wrapper>
+            <Header>
+                <Typography variant="h2">{project.name}</Typography>
+                <EdsProvider density="compact">
+                    <ActionsContainer>
+                        <Tooltip title="Export to STEA">
+                            <Button
+                                variant="ghost_icon"
+                                aria-label="Export to STEA"
+                                onClick={submitToSTEA}
+                            >
+                                <Icon data={archive} />
+                            </Button>
+                        </Tooltip>
+                        <Tooltip title="Add a case">
+                            <Button variant="ghost_icon" aria-label="Add a case" onClick={toggleCreateCaseModal}>
+                                <Icon data={add} />
+                            </Button>
+                        </Tooltip>
+                    </ActionsContainer>
+                </EdsProvider>
+            </Header>
 
-                        <WrapperColumn>
-                            <ProjectDataFieldLabel>Description:</ProjectDataFieldLabel>
-                            <Typography variant="h3">{project.description}</Typography>
-                        </WrapperColumn>
-                        <WrapperColumn>
-                            <ProjectDataFieldLabel>Project Phase:</ProjectDataFieldLabel>
-                            <Typography variant="h4" aria-label="Project phase">
-                                {GetProjectPhaseName(project.phase)}
-                            </Typography>
-                        </WrapperColumn>
-                        <WrapperColumn>
-                            <ProjectDataFieldLabel>Project Category:</ProjectDataFieldLabel>
-                            <Typography variant="h4" aria-label="Project category">
-                                {GetProjectCategoryName(project.category)}
-                            </Typography>
-                        </WrapperColumn>
-                        <WrapperColumn>
-                            <ProjectDataFieldLabel>Country:</ProjectDataFieldLabel>
-                            <Typography variant="h4" aria-label="Country">
-                                {project.country ?? "Not defined in Common Library"}
-                            </Typography>
-                        </WrapperColumn>
-                        <PhysicalUnit
-                            currentValue={physicalUnit}
-                            setPhysicalUnit={setPhysicalUnit}
-                            setProject={setProject}
-                            project={project}
+            <WrapperColumn>
+                <ProjectDataFieldLabel>Description:</ProjectDataFieldLabel>
+                <Typography variant="h3">{project.description}</Typography>
+            </WrapperColumn>
+            <WrapperColumn>
+                <ProjectDataFieldLabel>Project Phase:</ProjectDataFieldLabel>
+                <Typography variant="h4" aria-label="Project phase">
+                    {GetProjectPhaseName(project.phase)}
+                </Typography>
+            </WrapperColumn>
+            <WrapperColumn>
+                <ProjectDataFieldLabel>Project Category:</ProjectDataFieldLabel>
+                <Typography variant="h4" aria-label="Project category">
+                    {GetProjectCategoryName(project.category)}
+                </Typography>
+            </WrapperColumn>
+            <WrapperColumn>
+                <ProjectDataFieldLabel>Country:</ProjectDataFieldLabel>
+                <Typography variant="h4" aria-label="Country">
+                    {project.country ?? "Not defined in Common Library"}
+                </Typography>
+            </WrapperColumn>
+            <PhysicalUnit
+                currentValue={physicalUnit}
+                setPhysicalUnit={setPhysicalUnit}
+                setProject={setProject}
+                project={project}
+            />
+            <Currency
+                currentValue={currency}
+                setCurrency={setCurrency}
+                setProject={setProject}
+                project={project}
+            />
+            <ChartsContainer>
+                {capexYearXLabels.length !== 0
+                    ? (
+                        <LinearDataTable
+                            capexYearX={capexYearXLabels}
+                            capexYearY={capexYearYDatas}
+                            caseTitles={capexYearCaseTitles}
                         />
-                        <Currency
-                            currentValue={currency}
-                            setCurrency={setCurrency}
-                            setProject={setProject}
-                            project={project}
-                        />
-                        <ChartsContainer>
-                            {capexYearXLabels.length !== 0
-                                ? (
-                                    <LinearDataTable
-                                        capexYearX={capexYearXLabels}
-                                        capexYearY={capexYearYDatas}
-                                        caseTitles={capexYearCaseTitles}
-                                    />
-                                )
-                                : <Typography> No cases containing CapEx to display data for</Typography>}
-                        </ChartsContainer>
+                    )
+                    : <Typography> No cases containing CapEx to display data for</Typography>}
+            </ChartsContainer>
 
-                        <Modal isOpen={createCaseModalIsOpen} title="Create a case" shards={[]}>
-                            <CreateCaseForm>
-                                <TextField
-                                    label="Name"
-                                    id="name"
-                                    name="name"
-                                    placeholder="Enter a name"
-                                    onChange={handleCaseNameChange}
-                                />
+            <Modal isOpen={createCaseModalIsOpen} title="Create a case" shards={[]}>
+                <CreateCaseForm>
+                    <TextField
+                        label="Name"
+                        id="name"
+                        name="name"
+                        placeholder="Enter a name"
+                        onChange={handleCaseNameChange}
+                    />
 
-                                <TextField
-                                    label="Description"
-                                    id="description"
-                                    name="description"
-                                    placeholder="Enter a description"
-                                    onChange={handleDescriptionChange}
-                                />
+                    <TextField
+                        label="Description"
+                        id="description"
+                        name="description"
+                        placeholder="Enter a description"
+                        onChange={handleDescriptionChange}
+                    />
 
-                                <div>
-                                    <Button
-                                        type="submit"
-                                        onClick={submitCreateCaseForm}
-                                        disabled={caseName === "" || caseDescription === ""}
-                                    >
-                                        Create case
-                                    </Button>
-                                    <Button
-                                        type="button"
-                                        color="secondary"
-                                        variant="ghost"
-                                        onClick={toggleCreateCaseModal}
-                                    >
-                                        Cancel
-                                    </Button>
-                                </div>
-                            </CreateCaseForm>
-                        </Modal>
-                    </Wrapper>
-                </MainView>
-            </Body>
-        </ProjectWrapper>
+                    <div>
+                        <Button
+                            type="submit"
+                            onClick={submitCreateCaseForm}
+                            disabled={caseName === "" || caseDescription === ""}
+                        >
+                            Create case
+                        </Button>
+                        <Button
+                            type="button"
+                            color="secondary"
+                            variant="ghost"
+                            onClick={toggleCreateCaseModal}
+                        >
+                            Cancel
+                        </Button>
+                    </div>
+                </CreateCaseForm>
+            </Modal>
+        </Wrapper>
     )
 }
 
