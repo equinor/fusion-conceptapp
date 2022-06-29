@@ -1,6 +1,4 @@
-// eslint-disable-next-line camelcase
-import { chevron_left } from "@equinor/eds-icons"
-import { Divider, Icon, Typography } from "@equinor/eds-core-react"
+import { Divider } from "@equinor/eds-core-react"
 import { useParams } from "react-router-dom"
 
 import { useEffect, useState } from "react"
@@ -19,21 +17,35 @@ const SidebarDiv = styled.div`
     flex-direction: column;
 `
 
-const ReturnToSearch = styled.div`
-    display: flex;
-    align-items: center;
-    padding: 1rem 1rem 0 1rem;
-    cursor: pointer;
-`
-
 const StyledDivider = styled(Divider)`
     width: 80%;
 `
+const Wrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100vw;
+`
 
-function SideMenu() {
+const Body = styled.div`
+    display: flex;
+    flex-direction: row;
+    flex-row: 1;
+    width: 100%;
+    height: 100%;
+`
+
+const MainView = styled.div`
+    width: calc(100% - 15rem);
+    overflow: scroll;
+`
+
+interface Props {
+    children: JSX.Element;
+}
+
+const SideMenu: React.FC<Props> = ({ children }) => {
     const [project, setProject] = useState<Project>()
-    // const navigate = useNavigate()
-
     const { fusionProjectId } = useParams<Record<string, string | undefined>>()
 
     useEffect(() => {
@@ -50,14 +62,19 @@ function SideMenu() {
         }
     }, [])
 
-    console.log("fusionProjectId: ", fusionProjectId)
-    console.log("SideMenu > project: ", project)
     if (project) {
         return (
-            <SidebarDiv>
-                <StyledDivider />
-                <ProjectMenu project={project} />
-            </SidebarDiv>
+            <Wrapper>
+                <Body>
+                    <SidebarDiv>
+                        <StyledDivider />
+                        <ProjectMenu project={project} />
+                    </SidebarDiv>
+                    <MainView>
+                        {children}
+                    </MainView>
+                </Body>
+            </Wrapper>
         )
     }
     return null

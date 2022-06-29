@@ -1,5 +1,5 @@
-import { useEffect } from "react"
-import { Route, Switch, useHistory } from "react-router-dom"
+import { Route, Switch } from "react-router-dom"
+import SideMenu from "../Components/SideMenu/SideMenu"
 import CaseView from "../Views/CaseView"
 import DrainageStrategyView from "../Views/DrainageStrategyView"
 import ExplorationView from "../Views/ExplorationView"
@@ -18,49 +18,67 @@ export function AppRouter(): JSX.Element {
                 <Welcome />
             </Route>
             <Route exact path="/:fusionProjectId">
-                <ProjectView />
+                <SideMenu>
+                    <ProjectView />
+                </SideMenu>
             </Route>
             <Route path="/:fusionProjectId/case/:caseId" exact>
-                <CaseView />
+                <SideMenu>
+                    <CaseView />
+                </SideMenu>
             </Route>
             <Route path="/:fusionProjectId/case/:caseId/surf/:surfId" exact>
-                <SurfView />
+                <SideMenu>
+                    <SurfView />
+                </SideMenu>
             </Route>
             <Route
                 path="/:fusionProjectId/case/:caseId/drainagestrategy/:drainageStrategyId"
                 exact
             >
-                <DrainageStrategyView />
+                <SideMenu>
+                    <DrainageStrategyView />
+                </SideMenu>
             </Route>
             <Route
                 path="/:fusionProjectId/case/:caseId/topside/:topsideId"
                 exact
             >
-                <TopsideView />
+                <SideMenu>
+                    <TopsideView />
+                </SideMenu>
             </Route>
             <Route
                 path="/:fusionProjectId/case/:caseId/substructure/:substructureId"
                 exact
             >
-                <SubstructureView />
+                <SideMenu>
+                    <SubstructureView />
+                </SideMenu>
             </Route>
             <Route
                 path="/:fusionProjectId/case/:caseId/transport/:transportId"
                 exact
             >
-                <TransportView />
+                <SideMenu>
+                    <TransportView />
+                </SideMenu>
             </Route>
             <Route
                 path="/:fusionProjectId/case/:caseId/wellproject/:wellProjectId"
                 exact
             >
-                <WellProjectView />
+                <SideMenu>
+                    <WellProjectView />
+                </SideMenu>
             </Route>
             <Route
                 path="/:fusionProjectId/case/:caseId/exploration/:explorationId"
                 exact
             >
-                <ExplorationView />
+                <SideMenu>
+                    <ExplorationView />
+                </SideMenu>
             </Route>
         </Switch>
     )

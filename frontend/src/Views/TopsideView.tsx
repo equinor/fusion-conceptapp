@@ -1,12 +1,8 @@
-/* eslint-disable max-len */
-import {
-    Input, Label, Typography,
-} from "@equinor/eds-core-react"
+import { Typography } from "@equinor/eds-core-react"
 import { useEffect, useState } from "react"
 import {
     useParams,
 } from "react-router"
-import styled from "styled-components"
 import Save from "../Components/Save"
 import AssetName from "../Components/AssetName"
 import TimeSeries from "../Components/TimeSeries"
@@ -16,9 +12,9 @@ import { Project } from "../models/Project"
 import { GetProjectService } from "../Services/ProjectService"
 import { GetTopsideService } from "../Services/TopsideService"
 import { unwrapCase, unwrapProjectId } from "../Utils/common"
-import { GetArtificialLiftName, initializeFirstAndLastYear } from "./Asset/AssetHelper"
+import { initializeFirstAndLastYear } from "./Asset/AssetHelper"
 import {
-    AssetViewDiv, Dg4Field, Wrapper, WrapperColumn,
+    AssetViewDiv, Wrapper, WrapperColumn,
 } from "./Asset/StyledAssetComponents"
 import AssetTypeEnum from "../models/assets/AssetTypeEnum"
 import Maturity from "../Components/Maturity"
@@ -30,28 +26,8 @@ import NumberInputInherited from "../Components/NumberInputInherited"
 import ArtificialLiftInherited from "../Components/ArtificialLiftInherited"
 import ApprovedBy from "../Components/ApprovedBy"
 import DGDateInherited from "../Components/DGDateInherited"
-import SideMenu from "../Components/SideMenu/SideMenu"
 import { IAssetService } from "../Services/IAssetService"
 
-const ProjectWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    width: 100vw;
-`
-
-const Body = styled.div`
-    display: flex;
-    flex-direction: row;
-    flex-row: 1;
-    width: 100%;
-    height: 100%;
-`
-
-const MainView = styled.div`
-    width: calc(100% - 15rem);
-    overflow: scroll;
-`
 const TopsideView = () => {
     const [project, setProject] = useState<Project>()
     const [caseItem, setCase] = useState<Case>()
@@ -219,235 +195,228 @@ const TopsideView = () => {
         facilityOpex])
 
     return (
-        <ProjectWrapper>
-            <Body>
-                <SideMenu />
-                <MainView>
-                    <AssetViewDiv>
-                        <Wrapper>
-                            <Typography variant="h2">Topside</Typography>
-                            <Save
-                                name={topsideName}
-                                setHasChanges={setHasChanges}
-                                hasChanges={hasChanges}
-                                setAsset={setTopside}
-                                setProject={setProject}
-                                asset={topside!}
-                                assetService={topsideService!}
-                                assetType={AssetTypeEnum.topsides}
-                            />
-                            <Typography variant="h6">
-                                {topside?.LastChangedDate?.toLocaleString()
+        <AssetViewDiv>
+            <Wrapper>
+                <Typography variant="h2">Topside</Typography>
+                <Save
+                    name={topsideName}
+                    setHasChanges={setHasChanges}
+                    hasChanges={hasChanges}
+                    setAsset={setTopside}
+                    setProject={setProject}
+                    asset={topside!}
+                    assetService={topsideService!}
+                    assetType={AssetTypeEnum.topsides}
+                />
+                <Typography variant="h6">
+                    {topside?.LastChangedDate?.toLocaleString()
                         ? `Last changed: ${topside?.LastChangedDate?.toLocaleString()}` : ""}
-                            </Typography>
-                        </Wrapper>
-                        <AssetName
-                            setName={setTopsideName}
-                            name={topsideName}
-                            setHasChanges={setHasChanges}
-                        />
-                        <ApprovedBy
-                            setApprovedBy={setApprovedBy}
-                            approvedBy={approvedBy}
-                            setHasChanges={setHasChanges}
-                        />
-                        <Wrapper>
-                            <DGDateInherited
-                                setHasChanges={setHasChanges}
-                                setValue={setDG3Date}
-                                dGName="DG3"
-                                value={dG3Date}
-                                caseValue={caseItem?.DG3Date}
-                                disabled={topside?.source === 1}
-                            />
-                            <DGDateInherited
-                                setHasChanges={setHasChanges}
-                                setValue={setDG4Date}
-                                dGName="DG4"
-                                value={dG4Date}
-                                caseValue={caseItem?.DG4Date}
-                                disabled={topside?.source === 1}
-                            />
-                        </Wrapper>
-                        <AssetCurrency
-                            setCurrency={setCurrency}
-                            setHasChanges={setHasChanges}
-                            currentValue={currency}
-                        />
-                        <Typography>
-                            {`Prosp version: ${topside?.ProspVersion ? topside?.ProspVersion.toLocaleDateString() : "N/A"}`}
-                        </Typography>
-                        <Typography>
-                            {`Source: ${topside?.source === 0 || topside?.source === undefined ? "ConceptApp" : "Prosp"}`}
-                        </Typography>
-                        <Wrapper>
-                            <WrapperColumn>
-                                <ArtificialLiftInherited
-                                    currentValue={artificialLift}
-                                    setArtificialLift={setArtificialLift}
-                                    setHasChanges={setHasChanges}
-                                    caseArtificialLift={caseItem?.artificialLift}
-                                />
-                                <NumberInput
-                                    setHasChanges={setHasChanges}
-                                    setValue={setCostYear}
-                                    value={costYear ?? 0}
-                                    integer
-                                    label="Cost year"
-                                />
-                            </WrapperColumn>
-                        </Wrapper>
-                        <Wrapper>
-                            <NumberInputInherited
-                                setHasChanges={setHasChanges}
-                                setValue={setProducerCount}
-                                value={producerCount ?? 0}
-                                integer
-                                label="Producer count"
-                                caseValue={caseItem?.producerCount}
-                            />
-                            <NumberInputInherited
-                                setHasChanges={setHasChanges}
-                                setValue={setGasInjectorCount}
-                                value={gasInjectorCount ?? 0}
-                                integer
-                                label="Gas injector count"
-                                caseValue={caseItem?.gasInjectorCount}
-                            />
-                            <NumberInputInherited
-                                setHasChanges={setHasChanges}
-                                setValue={setWaterInjectorCount}
-                                value={waterInjectorCount ?? 0}
-                                integer
-                                label="Water injector count"
-                                caseValue={caseItem?.waterInjectorCount}
-                            />
-                            <NumberInputInherited
-                                setHasChanges={setHasChanges}
-                                setValue={setFacilitiesAvailability}
-                                value={facilitiesAvailability ?? 0}
-                                integer
-                                disabled={false}
-                                label="Facilities availability (%)"
-                                caseValue={caseItem?.facilitiesAvailability}
-                            />
-                        </Wrapper>
-                        <Wrapper>
-                            <NumberInput
-                                setHasChanges={setHasChanges}
-                                setValue={setFuelConsumption}
-                                value={fuelConsumption ?? 0}
-                                integer
-                                label="Fuel consumption (MSm³ gas/sd)"
-                            />
-                            <NumberInput
-                                setHasChanges={setHasChanges}
-                                setValue={setFlaredGas}
-                                value={flaredGas ?? 0}
-                                integer={false}
-                                label="Flared gas (MSm³ gas/sd)"
-                            />
-                        </Wrapper>
-                        <Wrapper>
-                            <NumberInput
-                                setHasChanges={setHasChanges}
-                                setValue={setDryweight}
-                                value={dryweight ?? 0}
-                                integer
-                                label="Topside dry weight (tonnes)"
-                            />
-                            <NumberInput
-                                setHasChanges={setHasChanges}
-                                setValue={setOilCapacity}
-                                value={oilCapacity ?? 0}
-                                integer={false}
-                                label="Capacity oil (Sm³/sd)"
-                            />
-                            <NumberInput
-                                setHasChanges={setHasChanges}
-                                setValue={setGasCapacity}
-                                value={gasCapacity ?? 0}
-                                integer={false}
-                                label="Capacity gas (MSm³/sd)"
-                            />
-                        </Wrapper>
-                        <Wrapper>
-                            <NumberInput
-                                setHasChanges={setHasChanges}
-                                setValue={setCO2ShareOilProfile}
-                                value={cO2ShareOilProfile ?? 0}
-                                integer
-                                label="CO2 Share Oil Profile (%)"
-                            />
-                            <NumberInput
-                                setHasChanges={setHasChanges}
-                                setValue={setCO2ShareGasProfile}
-                                value={cO2ShareGasProfile ?? 0}
-                                integer
-                                label="CO2 Share Gas Profile (%)"
-                            />
-                            <NumberInput
-                                setHasChanges={setHasChanges}
-                                setValue={setCO2ShareWaterInjectionProfile}
-                                value={cO2ShareWaterInjectionProfile ?? 0}
-                                integer
-                                label="CO2 Share Water Injection Profile (%)"
-                            />
-                        </Wrapper>
-                        <Wrapper>
-                            <NumberInput
-                                setHasChanges={setHasChanges}
-                                setValue={setCO2OnMaxOilProfile}
-                                value={cO2OnMaxOilProfile ?? 0}
-                                integer
-                                label="CO2 On Max Oil Profile (%)"
-                            />
-                            <NumberInput
-                                setHasChanges={setHasChanges}
-                                setValue={setCO2OnMaxGasProfile}
-                                value={cO2OnMaxGasProfile ?? 0}
-                                integer
-                                label="CO2 On Max Gas Profile (%)"
-                            />
-                            <NumberInput
-                                setHasChanges={setHasChanges}
-                                setValue={setCO2OnMaxWaterInjectionProfile}
-                                value={cO2OnMaxWaterInjectionProfile ?? 0}
-                                integer
-                                label="CO2 On Max Water Injection Profile (%)"
-                            />
-                        </Wrapper>
-                        <Maturity
-                            setMaturity={setMaturity}
-                            currentValue={maturity}
-                            setHasChanges={setHasChanges}
-                        />
-                        <TimeSeries
-                            dG4Year={caseItem?.DG4Date?.getFullYear()}
-                            setTimeSeries={setCostProfile}
-                            setHasChanges={setHasChanges}
-                            timeSeries={costProfile}
-                            timeSeriesTitle={`Cost profile ${currency === 2 ? "(MUSD)" : "(MNOK)"}`}
-                            firstYear={firstTSYear!}
-                            lastYear={lastTSYear!}
-                            setFirstYear={setFirstTSYear!}
-                            setLastYear={setLastTSYear}
-                        />
-                        <TimeSeries
-                            dG4Year={caseItem?.DG4Date?.getFullYear()}
-                            setTimeSeries={setCessationCostProfile}
-                            setHasChanges={setHasChanges}
-                            timeSeries={cessationCostProfile}
-                            timeSeriesTitle={`Cessation cost profile ${currency === 2 ? "(MUSD)" : "(MNOK)"}`}
-                            firstYear={firstTSYear!}
-                            lastYear={lastTSYear!}
-                            setFirstYear={setFirstTSYear!}
-                            setLastYear={setLastTSYear}
-                        />
-                    </AssetViewDiv>
-                </MainView>
-            </Body>
-        </ProjectWrapper>
+                </Typography>
+            </Wrapper>
+            <AssetName
+                setName={setTopsideName}
+                name={topsideName}
+                setHasChanges={setHasChanges}
+            />
+            <ApprovedBy
+                setApprovedBy={setApprovedBy}
+                approvedBy={approvedBy}
+                setHasChanges={setHasChanges}
+            />
+            <Wrapper>
+                <DGDateInherited
+                    setHasChanges={setHasChanges}
+                    setValue={setDG3Date}
+                    dGName="DG3"
+                    value={dG3Date}
+                    caseValue={caseItem?.DG3Date}
+                    disabled={topside?.source === 1}
+                />
+                <DGDateInherited
+                    setHasChanges={setHasChanges}
+                    setValue={setDG4Date}
+                    dGName="DG4"
+                    value={dG4Date}
+                    caseValue={caseItem?.DG4Date}
+                    disabled={topside?.source === 1}
+                />
+            </Wrapper>
+            <AssetCurrency
+                setCurrency={setCurrency}
+                setHasChanges={setHasChanges}
+                currentValue={currency}
+            />
+            <Typography>
+                {`Prosp version: ${topside?.ProspVersion ? topside?.ProspVersion.toLocaleDateString() : "N/A"}`}
+            </Typography>
+            <Typography>
+                {`Source: ${topside?.source === 0 || topside?.source === undefined ? "ConceptApp" : "Prosp"}`}
+            </Typography>
+            <Wrapper>
+                <WrapperColumn>
+                    <ArtificialLiftInherited
+                        currentValue={artificialLift}
+                        setArtificialLift={setArtificialLift}
+                        setHasChanges={setHasChanges}
+                        caseArtificialLift={caseItem?.artificialLift}
+                    />
+                    <NumberInput
+                        setHasChanges={setHasChanges}
+                        setValue={setCostYear}
+                        value={costYear ?? 0}
+                        integer
+                        label="Cost year"
+                    />
+                </WrapperColumn>
+            </Wrapper>
+            <Wrapper>
+                <NumberInputInherited
+                    setHasChanges={setHasChanges}
+                    setValue={setProducerCount}
+                    value={producerCount ?? 0}
+                    integer
+                    label="Producer count"
+                    caseValue={caseItem?.producerCount}
+                />
+                <NumberInputInherited
+                    setHasChanges={setHasChanges}
+                    setValue={setGasInjectorCount}
+                    value={gasInjectorCount ?? 0}
+                    integer
+                    label="Gas injector count"
+                    caseValue={caseItem?.gasInjectorCount}
+                />
+                <NumberInputInherited
+                    setHasChanges={setHasChanges}
+                    setValue={setWaterInjectorCount}
+                    value={waterInjectorCount ?? 0}
+                    integer
+                    label="Water injector count"
+                    caseValue={caseItem?.waterInjectorCount}
+                />
+                <NumberInputInherited
+                    setHasChanges={setHasChanges}
+                    setValue={setFacilitiesAvailability}
+                    value={facilitiesAvailability ?? 0}
+                    integer
+                    disabled={false}
+                    label="Facilities availability (%)"
+                    caseValue={caseItem?.facilitiesAvailability}
+                />
+            </Wrapper>
+            <Wrapper>
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setFuelConsumption}
+                    value={fuelConsumption ?? 0}
+                    integer
+                    label="Fuel consumption (MSm³ gas/sd)"
+                />
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setFlaredGas}
+                    value={flaredGas ?? 0}
+                    integer={false}
+                    label="Flared gas (MSm³ gas/sd)"
+                />
+            </Wrapper>
+            <Wrapper>
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setDryweight}
+                    value={dryweight ?? 0}
+                    integer
+                    label="Topside dry weight (tonnes)"
+                />
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setOilCapacity}
+                    value={oilCapacity ?? 0}
+                    integer={false}
+                    label="Capacity oil (Sm³/sd)"
+                />
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setGasCapacity}
+                    value={gasCapacity ?? 0}
+                    integer={false}
+                    label="Capacity gas (MSm³/sd)"
+                />
+            </Wrapper>
+            <Wrapper>
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setCO2ShareOilProfile}
+                    value={cO2ShareOilProfile ?? 0}
+                    integer
+                    label="CO2 Share Oil Profile (%)"
+                />
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setCO2ShareGasProfile}
+                    value={cO2ShareGasProfile ?? 0}
+                    integer
+                    label="CO2 Share Gas Profile (%)"
+                />
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setCO2ShareWaterInjectionProfile}
+                    value={cO2ShareWaterInjectionProfile ?? 0}
+                    integer
+                    label="CO2 Share Water Injection Profile (%)"
+                />
+            </Wrapper>
+            <Wrapper>
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setCO2OnMaxOilProfile}
+                    value={cO2OnMaxOilProfile ?? 0}
+                    integer
+                    label="CO2 On Max Oil Profile (%)"
+                />
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setCO2OnMaxGasProfile}
+                    value={cO2OnMaxGasProfile ?? 0}
+                    integer
+                    label="CO2 On Max Gas Profile (%)"
+                />
+                <NumberInput
+                    setHasChanges={setHasChanges}
+                    setValue={setCO2OnMaxWaterInjectionProfile}
+                    value={cO2OnMaxWaterInjectionProfile ?? 0}
+                    integer
+                    label="CO2 On Max Water Injection Profile (%)"
+                />
+            </Wrapper>
+            <Maturity
+                setMaturity={setMaturity}
+                currentValue={maturity}
+                setHasChanges={setHasChanges}
+            />
+            <TimeSeries
+                dG4Year={caseItem?.DG4Date?.getFullYear()}
+                setTimeSeries={setCostProfile}
+                setHasChanges={setHasChanges}
+                timeSeries={costProfile}
+                timeSeriesTitle={`Cost profile ${currency === 2 ? "(MUSD)" : "(MNOK)"}`}
+                firstYear={firstTSYear!}
+                lastYear={lastTSYear!}
+                setFirstYear={setFirstTSYear!}
+                setLastYear={setLastTSYear}
+            />
+            <TimeSeries
+                dG4Year={caseItem?.DG4Date?.getFullYear()}
+                setTimeSeries={setCessationCostProfile}
+                setHasChanges={setHasChanges}
+                timeSeries={cessationCostProfile}
+                timeSeriesTitle={`Cessation cost profile ${currency === 2 ? "(MUSD)" : "(MNOK)"}`}
+                firstYear={firstTSYear!}
+                lastYear={lastTSYear!}
+                setFirstYear={setFirstTSYear!}
+                setLastYear={setLastTSYear}
+            />
+        </AssetViewDiv>
     )
 }
 
